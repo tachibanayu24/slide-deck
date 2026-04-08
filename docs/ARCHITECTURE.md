@@ -21,6 +21,7 @@
 
 - **フレームワークCSS** — スライドの構造のみ（サイズ、レイアウトGrid、テーマ色切替、ページ番号、print、プレゼンモード）
 - **Tailwind CSS CDN** — コンテンツのスタイリング全般。LLMが追加知識ゼロで使える
+- **Lucide Icons CDN** — アイコン。`<i data-lucide="icon-name">` で使用。手動SVGや絵文字の代わりに使う
 - 独自ユーティリティクラスは作らない。Tailwindで表現する
 
 ## リポジトリ構成
@@ -58,7 +59,7 @@ slide-deck/
 |---|---|---|
 | `<s-deck>` | スライドコンテナ。フッターバー、ツールバー（ナビ/グリッド/プレゼン/PDF）、キーボード操作。`copyright` 属性 | ✅ |
 | `<s-slide>` | 個別スライド。`layout` / `theme` / `bg` / `section` 属性 | ✅ |
-| `<s-chart>` | データ可視化。`type` + `data` でSVG描画 | Phase 3c |
+| `<s-chart>` | データ可視化。`type` + `data` でSVG描画。bar / bar-horizontal / donut / line / scatter | ✅ |
 | `<s-mermaid>` | Mermaid.jsラッパー | Phase 3c |
 
 ### `<s-slide>` 属性
@@ -125,7 +126,7 @@ slide-deck/
 | **Skills** | フレームワークAPIリファレンス、デザイン原則、13パターン例 | ✅ |
 | **Agents** | slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer | ✅ |
 | **Bin** | `slide-screenshot` — Puppeteerスクリーンショット撮影 | ✅ |
-| **Bin** | `slide-gen-image` — Gemini画像生成CLI | Phase 3a |
+| **Bin** | `slide-gen-image` — Gemini画像生成CLI（白背景→透過変換、リトライ、スタイルディレクティブ対応） | ✅ |
 | **Hooks** | SessionStart — puppeteer自動インストール | ✅ |
 
 フィードバック蓄積は `CLAUDE_PLUGIN_DATA` に保存。
@@ -165,18 +166,16 @@ slide-deck/
 
 ### Phase 3: コンポーネント拡充 + 生成品質向上（次のセッションから）
 
-#### 3a. Gemini画像生成連携（最優先）
+#### 3a. Gemini画像生成連携 ✅
 
-参考実装: `tachibanayu24/article-writer` の `scripts/gen-ogp.mjs`
-- Gemini API (`gemini-3.1-flash-image-preview`) で3Dオブジェクト/イラストを生成
-- 白背景→透過変換して合成可能に
-- スライド全体で統一感のあるスタイルディレクティブを使い回す
-
-実装計画:
-- `plugin/bin/slide-gen-image` — Gemini画像生成CLI（GEMINI_API_KEY は .env から読み込み、なければSVGフォールバック）
-- Phase 5 で slide-visual エージェントが SVG か Gemini画像か判断
-- 用途: 表紙/セクション区切りの背景、text-image の visual 側、装飾要素
-- デッキ全体の統一感: 共通のスタイルディレクティブ（色味、質感、3D clay-like等）
+- `plugin/bin/slide-gen-image` — Gemini画像生成CLI
+  - Gemini API (`gemini-3.1-flash-image-preview`) で3Dオブジェクト/イラストを生成
+  - 白背景→透過変換（sharp）、503リトライ（最大3回）
+  - `--prompt`, `--style`, `--output`, `--width`, `--no-transparent` オプション
+  - GEMINI_API_KEY は .env（cwd上方探索）または環境変数から読み込み
+- slide-visual エージェントが SVG か Gemini画像かを用途に応じて自動判断
+- デッキ全体の統一感: 共通スタイルディレクティブを全ビジュアルエージェントに渡す
+- SessionStart フックで sharp を自動インストール
 
 #### 3b. 生成プロンプトの品質向上
 
@@ -184,15 +183,11 @@ slide-deck/
 - グラデーション背景のバリエーション、カード装飾、アクセントカラーの戦略ガイド強化
 - スタイルプリセット選択（Phase 1 で「ミニマル」「コーポレート」「カラフル」等を選べるように）
 
-#### 3c. データ可視化コンポーネント
+#### 3c. データ可視化コンポーネント ✅
 
-- `<s-chart>` — 棒グラフ、横棒、ドーナツ（SVG描画、`type` + `data` 属性）
-- `<s-mermaid>` — Mermaid.js統合
-
-#### 3d. ヘッダー機構
-
-- フッターと対になる上部ヘッダー（ロゴ+セクション名のスロット）
-- 参考PDFのLayerX Company Deck / LTスライドに見られるパターン
+- `<s-chart>` — `type`（bar / bar-horizontal / donut）+ `data`（JSON）でSVG描画
+- ダーク背景自動対応、カスタムカラー対応
+- `<s-mermaid>` は TODO.md へ移動
 
 ### Phase 4: 公開
 

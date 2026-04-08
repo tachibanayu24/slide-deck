@@ -59,6 +59,7 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
     }
   </script>
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
   <s-deck copyright="©Company Inc.">
@@ -69,6 +70,7 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
       <!-- 本文: 左フッターにセクション名 -->
     </s-slide>
   </s-deck>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
 ```
@@ -76,3 +78,13 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
 ### レイアウト一覧
 
 `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc`
+
+### `<s-chart>` コンポーネント
+
+`type` + `data` 属性でSVG描画するデータ可視化コンポーネント。`bar`, `bar-horizontal`, `donut`, `line`, `scatter` に対応。
+
+```html
+<s-chart type="bar" data='[{"label":"Q1","value":120},{"label":"Q2","value":180}]'></s-chart>
+<s-chart type="line" series='["売上","利益"]' data='[{"label":"2022","values":[100,40]},{"label":"2023","values":[150,60]}]'></s-chart>
+<s-chart type="scatter" x-label="X軸" y-label="Y軸" data='[{"label":"A","x":10,"y":20,"group":"G1"}]'></s-chart>
+```

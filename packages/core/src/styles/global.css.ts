@@ -278,6 +278,13 @@ s-slide pre code {
   border-radius: 0;
 }
 
+/* --- s-chart --- */
+s-chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* --- data-area: visual (auto-center content) --- */
 [data-area="visual"] {
   display: flex;

@@ -32,11 +32,13 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
     }
   </script>
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
   <s-deck copyright="©Company Inc.">
     <!-- s-slide 要素をここに並べる -->
   </s-deck>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
 ```
@@ -84,6 +86,50 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 |---|---|
 | `text` | セマンティックな意味のみ（スタイルなし） |
 | `visual` | `display: flex` + 中央揃え。画像やSVGを自動でセンタリング |
+
+### `<s-chart>`
+
+属性駆動のSVGチャート。`data-area="visual"` 内やスタンドアロンで使用。
+
+| 属性 | 必須 | 説明 |
+|---|---|---|
+| `type` | 推奨 | `bar`, `bar-horizontal`, `donut`, `line`, `scatter`。省略時は `bar` |
+| `data` | 必須 | JSON配列（形式はtypeにより異なる。下記参照） |
+| `colors` | 任意 | カンマ区切りの色コード。省略時はTailwindパレットから自動 |
+| `label` | 任意 | donut中央の説明テキスト（省略時: "Total"） |
+| `series` | 任意 | line multi-series用。JSON配列 `'["売上","利益"]'` |
+| `x-label` | 任意 | scatter用。X軸ラベル |
+| `y-label` | 任意 | scatter用。Y軸ラベル |
+
+ダーク背景の `<s-slide>` 内では自動でテキスト色を明色に切替。
+
+#### data 形式
+
+| type | data 形式 |
+|---|---|
+| bar, bar-horizontal, donut | `[{"label":"名前","value":数値}]` |
+| line（単一系列） | `[{"label":"Q1","value":120}]` |
+| line（複数系列） | `[{"label":"Q1","values":[120,80]}]` + `series='["A","B"]'` |
+| scatter | `[{"label":"名前","x":数値,"y":数値,"group":"グループ名"}]` |
+
+#### 使用例
+
+```html
+<!-- 縦棒グラフ -->
+<s-chart type="bar" data='[{"label":"Q1","value":120},{"label":"Q2","value":180},{"label":"Q3","value":150},{"label":"Q4","value":210}]'></s-chart>
+
+<!-- 横棒グラフ -->
+<s-chart type="bar-horizontal" data='[{"label":"React","value":85},{"label":"Vue","value":62},{"label":"Angular","value":38}]'></s-chart>
+
+<!-- ドーナツ -->
+<s-chart type="donut" label="ユーザー" data='[{"label":"モバイル","value":60},{"label":"デスクトップ","value":30},{"label":"タブレット","value":10}]'></s-chart>
+
+<!-- 折れ線グラフ（複数系列） -->
+<s-chart type="line" series='["売上","利益"]' data='[{"label":"2022","values":[100,40]},{"label":"2023","values":[150,60]},{"label":"2024","values":[210,95]},{"label":"2025","values":[280,130]}]'></s-chart>
+
+<!-- 散布図 -->
+<s-chart type="scatter" x-label="エネルギー密度 (Wh/kg)" y-label="サイクル寿命" data='[{"label":"LFP","x":160,"y":3000,"group":"リチウム"},{"label":"NMC","x":250,"y":1500,"group":"リチウム"},{"label":"Na-ion","x":120,"y":2000,"group":"次世代"},{"label":"固体","x":400,"y":1000,"group":"次世代"}]'></s-chart>
+```
 
 ## レイアウト一覧と使い分け
 
@@ -223,25 +269,87 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | 補足・注釈 | `text-sm text-slate-400` |
 | バッジ・ラベル | `text-xs font-bold` |
 
-### 色の使い方
+### カラー戦略
 
+デッキ全体で **ベース + メイン + アクセント** の3色を決め、全スライドで統一する。
+
+| 役割 | 用途 | 例（Blue系） | 例（Emerald系） |
+|---|---|---|---|
+| ベース | テキスト、背景 | slate-800 / slate-50 | slate-800 / slate-50 |
+| メイン | 見出し装飾、アイコン背景、セクション色 | blue-600 / blue-50 | emerald-600 / emerald-50 |
+| アクセント | CTA、数値ハイライト、バッジ | amber-500 | violet-500 |
+
+テキスト色の基本:
 - **メインテキスト**: `text-slate-800` (light) / 自動 (dark)
 - **サブテキスト**: `text-slate-500` (light) / `text-slate-400` (dark)
-- **アクセント**: `text-blue-600`, `bg-blue-50`, `border-blue-500`
 - **強調**: `font-bold text-slate-800` or `font-semibold`
-- **コードブロック背景**: `bg-slate-900 text-slate-200`
+
+### グラデーション背景レシピ
+
+表紙・セクション区切りで使い分ける。**1デッキ内では同系色のバリエーション**を使って統一感を保つ。
+
+```
+/* ダーク系（表紙・締め） */
+bg="linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)"          /* Deep Navy */
+bg="linear-gradient(135deg, #0f172a 0%, #312e81 100%)"          /* Midnight Indigo */
+bg="linear-gradient(160deg, #0c0a09 0%, #1c1917 50%, #292524 100%)" /* Warm Dark */
+
+/* ビビッド系（セクション区切り） */
+bg="linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)"          /* Blue → Purple */
+bg="linear-gradient(135deg, #059669 0%, #0891b2 100%)"          /* Emerald → Cyan */
+bg="linear-gradient(135deg, #dc2626 0%, #ea580c 100%)"          /* Red → Orange */
+
+/* ソフト系（ライト背景のアクセント） */
+bg="linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)"          /* Blue-50 → Violet-50 */
+bg="linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%)"          /* Emerald-50 → Teal-50 */
+```
 
 ### ダーク背景スライド
 
 `theme="dark"` を設定すれば本文色は自動で明色になる。見出しや強調は Tailwind クラスで個別指定：
 
 ```html
-<s-slide layout="title" theme="dark" bg="linear-gradient(...)">
+<s-slide layout="title" theme="dark" bg="linear-gradient(135deg, #0f172a, #1e3a5f)">
   <h1 class="text-white">...</h1>           <!-- 白 -->
   <p class="text-slate-400">...</p>          <!-- 薄いグレー -->
   <p class="text-blue-400 text-sm">...</p>   <!-- アクセント -->
 </s-slide>
 ```
+
+### カード装飾テクニック
+
+箇条書きの代わりにカードで情報を構造化すると、視覚的インパクトが大きく上がる。
+
+```html
+<!-- メインカラーの左ボーダー -->
+<div class="bg-white border-l-4 border-blue-500 rounded-lg p-4 shadow-sm">
+
+<!-- 薄い背景 + アイコン番号 -->
+<div class="bg-blue-50 rounded-xl p-5">
+  <div class="text-3xl font-black text-blue-500 mb-2">01</div>
+  <h3 class="font-bold text-slate-800">タイトル</h3>
+  <p class="text-sm text-slate-500 mt-1">説明</p>
+</div>
+
+<!-- ハイライト数値 -->
+<div class="text-center">
+  <div class="text-4xl font-black text-blue-600">98%</div>
+  <div class="text-sm text-slate-400 mt-1">顧客満足度</div>
+</div>
+
+<!-- グラスモーフィズム（ダーク背景上で） -->
+<div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5">
+  <p class="text-white">内容</p>
+</div>
+```
+
+### 視覚的インパクトのルール
+
+1. **数値は大きく、単位は小さく**: `<span class="text-5xl font-black">42</span><span class="text-xl">%</span>`
+2. **キーメッセージは引用ブロックで**: `bg-blue-50 border-l-4 border-blue-500` で目立たせる
+3. **アイコンは Lucide を使う**: 絵文字ではなく `<i data-lucide="icon-name">` を使う（下記参照）
+4. **コントラストで視線誘導**: 重要な要素だけに色を使い、それ以外は `slate-400` 〜 `slate-500`
+5. **カードの影は控えめに**: `shadow-sm` が基本。`shadow-lg` は1枚のスライドで1箇所まで
 
 ### 情報量の制約
 
@@ -249,13 +357,45 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 - スライドサイズは **297mm × 167mm**（16:9）。overflow: hidden なのではみ出すと切れる
 - 余白を大切にする。`mb-4`, `space-y-3` 等で適度にスペースを取る
 
-### SVG図解のガイドライン
+### Lucide アイコン
 
-- `viewBox` を設定し、width/height は親に合わせる
-- テキストには `font-family: system-ui, sans-serif` を指定
-- 色はTailwindパレットに合わせる（`#2563eb` = blue-600, `#f59e0b` = amber-500 等）
-- 矢印は `<marker>` + `<defs>` で定義
-- シンプルに。要素は5〜8個程度まで
+Lucide CDN でアイコンを使用する。手動SVGや絵文字の代わりにこちらを使う。
+
+```html
+<!-- 基本 -->
+<i data-lucide="arrow-right" class="w-5 h-5"></i>
+
+<!-- カード内アイコン（色付き背景 + アイコン） -->
+<div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+  <i data-lucide="zap" class="w-5 h-5 text-blue-600"></i>
+</div>
+
+<!-- ダーク背景 -->
+<i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+```
+
+よく使うアイコン名: `arrow-right`, `check-circle`, `zap`, `shield`, `globe`, `database`, `users`, `trending-up`, `bar-chart-3`, `rocket`, `lightbulb`, `target`, `layers`, `git-branch`, `cloud`, `lock`, `server`
+
+参照: https://lucide.dev/icons
+
+### ビジュアルのガイドライン
+
+#### SVG図解
+- 詳細なルール（カラーパレット、矢印テンプレート、図解パターン）は `slide-visual` エージェント定義を参照
+- 基本: `viewBox` 必須 + `width="100%"`、色はTailwindパレット準拠、要素は5〜8個程度まで
+
+#### Gemini画像（3Dオブジェクト・イラスト）
+- `slide-gen-image` CLIで生成。GEMINI_API_KEY が必要（なければSVGにフォールバック）
+- 画像は `.images/` ディレクトリに保存し、相対パスで参照
+- 白背景→透過変換済み。`drop-shadow-lg` で浮遊感を演出
+- デッキ全体で共通のスタイルディレクティブを使い、統一感を保つ
+
+```html
+<!-- Gemini画像の埋め込み例 -->
+<div data-area="visual">
+  <img src=".images/cloud-server.png" alt="クラウドサーバー" class="w-full h-auto object-contain drop-shadow-lg">
+</div>
+```
 
 ## フィードバックの参照
 

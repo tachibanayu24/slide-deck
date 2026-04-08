@@ -140,11 +140,13 @@ HTMLテンプレート:
     }
   </script>
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
   <s-deck copyright="©Company Inc.">
     <!-- s-slide 要素をここに -->
   </s-deck>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
 ```
@@ -157,21 +159,66 @@ HTMLテンプレート:
 - グリッドレイアウトの子要素に `data-area="text"` / `data-area="visual"`
 - スタイリングは Tailwind CSS クラスを使う
 
-### 図解の生成 — 並列サブエージェント
+### Gemini画像生成のセットアップ
 
-アウトラインに図解を含むスライドがある場合、**slide-visual サブエージェントを並列起動**してSVG図解を生成させてください：
+ビジュアル生成の前に、Gemini API キーの有無を確認してください。
+
+```bash
+test -f "${CLAUDE_PLUGIN_DATA}/gemini-api-key" && echo "READY" || echo "NOT_SET"
+```
+
+**`NOT_SET` の場合**、AskUserQuestion でユーザーに確認してください（questions 配列に1つ）：
+
+- **header**: "Gemini画像"
+- **question**: "スライドのビジュアル（3Dアイコン・イラスト）をAI画像生成で作成できます。Gemini API キーを入力しますか？（Google AI Studio で無料取得可能）"
+- **選択肢**:
+  1. 「スキップ」— description: 「SVG図解のみで生成します」
+- ※ ユーザーは「Other」からAPIキーを直接貼り付けられます
+
+ユーザーが Other でキーを入力した場合、Bash で保存してください：
+
+```bash
+mkdir -p "${CLAUDE_PLUGIN_DATA}" && echo "<入力されたキー>" > "${CLAUDE_PLUGIN_DATA}/gemini-api-key"
+```
+
+**`READY` の場合**、またはキー保存後、Gemini画像が利用可能です。スキップされた場合は全ビジュアルをSVGで生成してください。
+
+### ビジュアル生成 — 並列サブエージェント
+
+アウトラインにビジュアル（図解・イラスト・アイコン等）を含むスライドがある場合、**slide-visual サブエージェントを並列起動**してください。
+
+#### スタイルディレクティブの決定
+
+Gemini画像を使う場合（APIキーが利用可能な場合のみ）、デッキ全体で統一感を出すため**共通のスタイルディレクティブ**を決めてください。スタイルディレクティブは全ビジュアルエージェントに同じものを渡します。
+
+デフォルト: `"A single 3D rendered object with glossy, smooth, clay-like material finish. The object looks tactile and touchable, like a cute plastic toy or candy. Soft studio lighting with gentle reflections on the surface. Kawaii, minimal, charming style."`
+
+テーマに応じてカスタマイズ可能：
+- テック系: `"A single 3D rendered object with metallic, futuristic finish. Neon blue accent lighting. Clean, modern tech style."`
+- ビジネス系: `"A single 3D rendered object with smooth matte finish. Warm professional lighting. Corporate, elegant style."`
+
+#### ビジュアルの種類と使い分け
+
+| 用途 | 手法 | 例 |
+|---|---|---|
+| 表紙・セクションの装飾 | Gemini画像 | ロケット、歯車、グラフアイコン |
+| text-image の visual 側（概念的） | Gemini画像 | クラウドサーバー、セキュリティシールド |
+| text-image の visual 側（構造的） | SVG | アーキテクチャ図、フロー図 |
+| 比較・マトリクス内の図解 | SVG | Before/After、分類図 |
+
+#### エージェント起動
 
 ```
 Agent({
-  description: "[図解テーマ]のSVG生成",
+  description: "[ビジュアルテーマ]の生成",
   subagent_type: "slide-deck:slide-visual",
-  prompt: "以下の内容でスライド用SVG図解を生成してください。\n- テーマ: [具体的な内容]\n- 配置: [text-image等]レイアウトの[左/右]側\n- 背景: [ライト/ダーク]\n- サイズ感: viewBox 320x280 程度"
+  prompt: "以下の内容でスライド用ビジュアルを生成してください。\n- テーマ: [具体的な内容]\n- 配置: [text-image等]レイアウトの[左/右]側\n- 背景: [ライト/ダーク]\n- HTMLファイルパス: [slides/xxx.html]\n- スタイルディレクティブ: [共通スタイル文字列]\n- 推奨手法: [Gemini画像 / SVG / おまかせ]"
 })
 ```
 
-複数の図解が必要な場合は、すべてのサブエージェントを **1つのメッセージで並列起動** してください。
+複数のビジュアルが必要な場合は、すべてのサブエージェントを **1つのメッセージで並列起動** してください。
 
-サブエージェントの結果を対応するスライドの `data-area="visual"` に埋め込みます。
+サブエージェントの結果（SVGコードまたは `<img>` タグ）を対応するスライドの `data-area="visual"` に埋め込みます。
 
 TodoWrite: 「Phase 5: 生成」を完了にマーク。
 

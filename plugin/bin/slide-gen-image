@@ -1,0 +1,220 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+
+// --- Argument parsing ---
+
+function parseArgs(argv) {
+  const args = { transparent: true };
+  for (let i = 2; i < argv.length; i++) {
+    switch (argv[i]) {
+      case '--prompt': case '-p':
+        args.prompt = argv[++i];
+        break;
+      case '--style': case '-s':
+        args.style = argv[++i];
+        break;
+      case '--output': case '-o':
+        args.output = argv[++i];
+        break;
+      case '--width': case '-w':
+        args.width = parseInt(argv[++i], 10);
+        break;
+      case '--no-transparent':
+        args.transparent = false;
+        break;
+      default:
+        console.error(`Unknown option: ${argv[i]}`);
+        process.exit(1);
+    }
+  }
+  return args;
+}
+
+const args = parseArgs(process.argv);
+
+if (!args.prompt || !args.output) {
+  console.error('Usage: slide-gen-image --prompt <description> --output <path.png> [--style <style>] [--width <px>] [--no-transparent]');
+  console.error('');
+  console.error('Options:');
+  console.error('  --prompt, -p   Object/scene description (required)');
+  console.error('  --output, -o   Output PNG file path (required)');
+  console.error('  --style, -s    Style directive (default: 3D clay-like)');
+  console.error('  --width, -w    Resize to this width (maintaining aspect ratio)');
+  console.error('  --no-transparent  Keep white background');
+  process.exit(1);
+}
+
+// --- Resolve API key ---
+// Priority: env var → CLAUDE_PLUGIN_DATA/gemini-api-key → .env (search upward)
+
+function resolveApiKey() {
+  // 1. Environment variable
+  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
+
+  // 2. CLAUDE_PLUGIN_DATA/gemini-api-key
+  const dataDir = process.env.CLAUDE_PLUGIN_DATA;
+  if (dataDir) {
+    const keyFile = path.join(dataDir, 'gemini-api-key');
+    if (fs.existsSync(keyFile)) {
+      const key = fs.readFileSync(keyFile, 'utf-8').trim();
+      if (key) return key;
+    }
+  }
+
+  // 3. .env file (search upward from cwd)
+  let dir = process.cwd();
+  while (true) {
+    const envPath = path.join(dir, '.env');
+    if (fs.existsSync(envPath)) {
+      const lines = fs.readFileSync(envPath, 'utf-8').split('\n');
+      for (const line of lines) {
+        const match = line.match(/^(\w+)=(.+)$/);
+        if (match && match[1] === 'GEMINI_API_KEY') return match[2].trim();
+      }
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  return null;
+}
+
+const apiKey = resolveApiKey();
+if (!apiKey) {
+  console.error('Error: GEMINI_API_KEY is not set.');
+  console.error('The /slide workflow will prompt you to set it up.');
+  process.exit(1);
+}
+
+// --- Load sharp (CLAUDE_PLUGIN_DATA → global fallback) ---
+
+let sharp;
+try {
+  const dataDir = process.env.CLAUDE_PLUGIN_DATA;
+  if (dataDir) {
+    try {
+      sharp = require(path.join(dataDir, 'node_modules', 'sharp'));
+    } catch {
+      sharp = require('sharp');
+    }
+  } else {
+    sharp = require('sharp');
+  }
+} catch {
+  console.error('sharp is not installed.');
+  console.error('Run: npm install sharp');
+  process.exit(1);
+}
+
+// --- Style directive ---
+
+const DEFAULT_STYLE =
+  'A single 3D rendered object with glossy, smooth, clay-like material finish. ' +
+  'The object looks tactile and touchable, like a cute plastic toy or candy. ' +
+  'Soft studio lighting with gentle reflections on the surface. Kawaii, minimal, charming style.';
+
+function buildPrompt(description, style) {
+  const s = style || DEFAULT_STYLE;
+  return (
+    `${s} The object is: ${description}. ` +
+    'CRITICAL: The background MUST be pure solid white (#FFFFFF), completely empty, ' +
+    'no gradients, no shadows, no floor, no other elements. Only the single object centered on pure white.'
+  );
+}
+
+// --- Gemini API ---
+
+async function generateImage(prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${apiKey}`;
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Gemini API error (${res.status}): ${err}`);
+  }
+
+  const data = await res.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const imagePart = parts.find((p) => p.inlineData);
+
+  if (!imagePart) {
+    throw new Error('Gemini API returned no image');
+  }
+
+  return Buffer.from(imagePart.inlineData.data, 'base64');
+}
+
+// --- White background → transparent ---
+
+async function removeWhiteBackground(buffer) {
+  const { data, info } = await sharp(buffer)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    if (r > 240 && g > 240 && b > 240) {
+      data[i + 3] = 0;
+    }
+  }
+
+  return sharp(data, {
+    raw: { width: info.width, height: info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
+}
+
+// --- Main ---
+
+(async () => {
+  const fullPrompt = buildPrompt(args.prompt, args.style);
+  const outPath = path.resolve(args.output);
+
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+
+  // Retry up to 3 times for 503 errors
+  let imageBuffer;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      imageBuffer = await generateImage(fullPrompt);
+      break;
+    } catch (e) {
+      if (attempt < 2 && e.message.includes('503')) {
+        console.error(`Retrying in 3s... (attempt ${attempt + 1}/3)`);
+        await new Promise((r) => setTimeout(r, 3000));
+      } else {
+        console.error(e.message);
+        process.exit(1);
+      }
+    }
+  }
+
+  if (args.transparent) {
+    imageBuffer = await removeWhiteBackground(imageBuffer);
+  }
+
+  if (args.width) {
+    imageBuffer = await sharp(imageBuffer)
+      .resize(args.width, null, { fit: 'inside' })
+      .png()
+      .toBuffer();
+  }
+
+  fs.writeFileSync(outPath, imageBuffer);
+  console.log(outPath);
+})();

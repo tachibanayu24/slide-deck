@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "test -d \"${CLAUDE_PLUGIN_DATA}/node_modules/puppeteer\" || (mkdir -p \"${CLAUDE_PLUGIN_DATA}\" && cd \"${CLAUDE_PLUGIN_DATA}\" && npm install --no-save puppeteer 2>/dev/null) || true"
+            "command": "(test -d \"${CLAUDE_PLUGIN_DATA}/node_modules/puppeteer\" && test -d \"${CLAUDE_PLUGIN_DATA}/node_modules/sharp\") || (mkdir -p \"${CLAUDE_PLUGIN_DATA}\" && cd \"${CLAUDE_PLUGIN_DATA}\" && npm install --no-save puppeteer sharp 2>/dev/null) || true"
           }
         ]
       }

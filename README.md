@@ -45,10 +45,11 @@ graph LR
 | コマンド | `/slide` | 7フェーズ オーケストレーター |
 | スキル | `slide-generation` | フレームワーク API リファレンス + デザイン原則 |
 | エージェント | `slide-researcher` | WebSearch でコンテンツ調査・データ収集 |
-| エージェント | `slide-visual` | SVG 図解・ダイアグラム生成 |
+| エージェント | `slide-visual` | SVG 図解・ダイアグラム生成 + Gemini 画像生成 |
 | エージェント | `slide-reviewer` | ファクトチェック・デザイン・HTML構造レビュー |
 | エージェント | `slide-visual-reviewer` | スクリーンショットを画像で読み取りビジュアル品質レビュー |
 | CLI | `slide-screenshot` | Puppeteer でスライドを PNG 撮影（`bin/` で自動 PATH 追加） |
+| CLI | `slide-gen-image` | Gemini API で 3D オブジェクト/イラスト生成（白背景→透過変換） |
 
 ## クイックスタート
 
@@ -74,6 +75,7 @@ claude
   <title>My Slides</title>
   <script src="https://cdn.tailwindcss.com/"></script>
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
   <s-deck>
@@ -91,6 +93,7 @@ claude
       </ul>
     </s-slide>
   </s-deck>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
 ```
@@ -107,9 +110,19 @@ claude
 
 | 属性 | 説明 | 例 |
 |---|---|---|
-| `layout` | レイアウトプリセット | `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section` |
+| `layout` | レイアウトプリセット | `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc` |
 | `theme` | テーマ。`dark` で文字色を自動反転 | `dark` |
 | `bg` | 背景。CSS の `background` 値 | `#0f172a`, `linear-gradient(...)` |
+
+### `<s-chart>`
+
+属性駆動のSVGチャート。5種対応: `bar`, `bar-horizontal`, `donut`, `line`, `scatter`。
+
+```html
+<s-chart type="bar" data='[{"label":"Q1","value":120},{"label":"Q2","value":180}]'></s-chart>
+<s-chart type="line" series='["売上","利益"]' data='[{"label":"2023","values":[100,40]},{"label":"2024","values":[150,60]}]'></s-chart>
+<s-chart type="scatter" x-label="X" y-label="Y" data='[{"label":"A","x":10,"y":20,"group":"G1"}]'></s-chart>
+```
 
 ### `data-area` 属性
 
@@ -130,7 +143,7 @@ slide-deck/
 ├── plugin/                 # Claude Code プラグイン
 │   ├── commands/slide.md   #   /slide コマンド（7フェーズ）
 │   ├── agents/             #   サブエージェント（researcher, visual, reviewer, visual-reviewer）
-│   ├── bin/                #   CLI ツール（slide-screenshot）
+│   ├── bin/                #   CLI ツール（slide-screenshot, slide-gen-image）
 │   └── skills/             #   フレームワークリファレンス
 ├── examples/               # サンプル HTML
 └── docs/                   # 設計ドキュメント
