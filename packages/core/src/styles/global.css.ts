@@ -66,10 +66,11 @@ s-slide {
 s-slide::after {
   content: attr(data-page) ' / ' attr(data-total);
   position: absolute;
-  bottom: 1rem;
+  bottom: 1.25rem;
   right: 1.5rem;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #94a3b8;
+  letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -166,6 +167,79 @@ s-slide[layout="section"]::before {
   bottom: 0;
   width: 6px;
   background: #2563eb;
+}
+
+/* ============================================
+   Element Base Styles
+   Sensible defaults for common HTML elements.
+   Can be overridden with Tailwind classes.
+   ============================================ */
+
+/* --- Tables --- */
+s-slide table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+s-slide th {
+  text-align: left;
+  font-weight: 600;
+  color: #64748b;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+s-slide td {
+  padding: 0.375rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+s-slide[theme="dark"] th {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+s-slide[theme="dark"] td {
+  border-bottom-color: #1e293b;
+}
+
+/* --- Lists --- */
+s-slide ul, s-slide ol {
+  padding-left: 1.5em;
+}
+
+s-slide li {
+  margin-bottom: 0.25em;
+}
+
+/* --- Code --- */
+s-slide code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85em;
+  background: #f1f5f9;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+s-slide[theme="dark"] code {
+  background: #1e293b;
+}
+
+s-slide pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1.25rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+s-slide pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
 }
 
 /* --- data-area: visual (auto-center content) --- */
