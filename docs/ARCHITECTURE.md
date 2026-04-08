@@ -123,7 +123,7 @@ slide-deck/
 | コンポーネント | 用途 | 状態 |
 |---|---|---|
 | **Commands** | `/slide` — 7フェーズスライド生成ワークフロー | ✅ |
-| **Skills** | フレームワークAPIリファレンス、デザイン原則、13パターン例 | ✅ |
+| **Skills** | フレームワークAPIリファレンス、デザイン原則、17パターン例 | ✅ |
 | **Agents** | slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer | ✅ |
 | **Bin** | `slide-screenshot` — Puppeteerスクリーンショット撮影 | ✅ |
 | **Bin** | `slide-gen-image` — Gemini画像生成CLI（白背景→透過変換、リトライ、スタイルディレクティブ対応） | ✅ |
@@ -159,12 +159,11 @@ slide-deck/
 
 - `/slide` コマンド — 7フェーズワークフロー（Discovery → Review → Summary）
 - サブエージェント4種 — slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer
-- slide-generation スキル — APIリファレンス、デザイン原則、13パターン例
+- slide-generation スキル — APIリファレンス、デザイン原則、17パターン例
 - `bin/slide-screenshot` — Puppeteer でスクリーンショット撮影（ビジュアルレビュー用）
-- SessionStart フックで puppeteer 自動インストール
-- **生成品質のフィードバックループが回り始めた。まだシンプルすぎる課題あり**
+- SessionStart フックで puppeteer・sharp 自動インストール
 
-### Phase 3: コンポーネント拡充 + 生成品質向上（次のセッションから）
+### Phase 3: コンポーネント拡充 + 生成品質向上 ✅
 
 #### 3a. Gemini画像生成連携 ✅
 
@@ -177,16 +176,17 @@ slide-deck/
 - デッキ全体の統一感: 共通スタイルディレクティブを全ビジュアルエージェントに渡す
 - SessionStart フックで sharp を自動インストール
 
-#### 3b. 生成プロンプトの品質向上
+#### 3b. 生成プロンプトの品質向上 ✅
 
-- 現状「正しいHTML」寄りの生成指示を「視覚的に印象的」に転換
-- グラデーション背景のバリエーション、カード装飾、アクセントカラーの戦略ガイド強化
-- スタイルプリセット選択（Phase 1 で「ミニマル」「コーポレート」「カラフル」等を選べるように）
+- SKILL.md にカラー戦略、グラデーションレシピ、カード装飾テクニック、視覚インパクトルールを追加
+- Lucide Icons CDN 統合。手動SVG/絵文字の代わりにアイコンライブラリを使用
+- 用途別 Gemini 画像プロンプト戦略（表紙/セクション/text-image で異なるサイズ・スタイル）
+- スタイルプリセット選択は TODO.md へ移動
 
 #### 3c. データ可視化コンポーネント ✅
 
-- `<s-chart>` — `type`（bar / bar-horizontal / donut）+ `data`（JSON）でSVG描画
-- ダーク背景自動対応、カスタムカラー対応
+- `<s-chart>` — bar / bar-horizontal / donut / line（複数系列）/ scatter（グループ色分け）
+- ダーク背景自動対応、カスタムカラー、データ数に応じたサイズ自動調整
 - `<s-mermaid>` は TODO.md へ移動
 
 ### Phase 4: 公開

@@ -39,7 +39,33 @@ maxTurns: 15
 ### 呼び出し方
 
 ```bash
-slide-gen-image --prompt "<オブジェクト説明>" --output <出力パス> [--style "<スタイル指示>"] [--width <px>]
+slide-gen-image --prompt "<プロンプト>" --output <出力パス> --style "<スタイル指示>" --width <px>
+```
+
+### 用途別のプロンプト・サイズ戦略
+
+画像の用途に応じてプロンプトとサイズを変える。**毎回同じ「3D小物」にしない。**
+
+| 用途 | --prompt の方針 | --width | --style の方針 | HTML での表示 |
+|---|---|---|---|---|
+| **表紙の装飾** | テーマを象徴する大きめのシーン/オブジェクト。具体的に指定 | 600 | デッキ共通スタイル | `w-48`〜`w-64` |
+| **セクション区切り** | セクション内容を象徴するアイコン的オブジェクト | 400 | デッキ共通スタイル | `w-32`〜`w-40` |
+| **text-image の visual** | 説明内容を補完する概念的イラスト | 500 | デッキ共通スタイル | `w-full h-auto` |
+
+#### プロンプト例
+
+```
+# 表紙: テーマ「IPO市場レポート」
+--prompt "A rising stock chart with golden coins and upward arrows, symbolizing IPO market growth"
+--width 600
+
+# セクション区切り: 「市場概況」
+--prompt "A magnifying glass examining a bar chart, representing market analysis"
+--width 400
+
+# text-image: 「クラウドセキュリティ」
+--prompt "A shield protecting a cloud server with a lock icon, representing cloud security"
+--width 500
 ```
 
 ### 手順
@@ -51,6 +77,10 @@ slide-gen-image --prompt "<オブジェクト説明>" --output <出力パス> [-
 ### 出力形式（Gemini画像の場合）
 
 ```html
+<!-- 表紙・セクション: サイズクラスで明示的に大きさを指定 -->
+<img src=".images/<filename>.png" alt="<説明>" class="w-48 h-auto drop-shadow-lg">
+
+<!-- text-image の visual 側: 親コンテナにフィット -->
 <img src=".images/<filename>.png" alt="<説明>" class="w-full h-auto object-contain drop-shadow-lg">
 ```
 
@@ -63,6 +93,8 @@ slide-gen-image --prompt "<オブジェクト説明>" --output <出力パス> [-
 呼び出し元から `--style` が指定される場合があります。**デッキ全体で同じスタイルを使い回すことで統一感を出します。**
 
 デフォルト（指定なしの場合）: `"A single 3D rendered object with glossy, smooth, clay-like material finish. The object looks tactile and touchable, like a cute plastic toy or candy. Soft studio lighting with gentle reflections on the surface. Kawaii, minimal, charming style."`
+
+スタイルはデッキのトーンに応じてカスタマイズ可能。呼び出し元がスタイルを渡さない場合はデフォルトを使う。
 
 ### GEMINI_API_KEY がない場合
 

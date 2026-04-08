@@ -259,8 +259,9 @@ export class SChart extends HTMLElement {
     const maxVal = safeMax(Math.max(...data.map((d) => d.value)));
 
     const m: Margin = { top: 8, right: 56, bottom: 8, left: 72 };
-    const barH = 24;
-    const gap = 10;
+    // Scale bar height up when few data points to avoid empty space
+    const barH = data.length <= 3 ? 40 : data.length <= 5 ? 32 : 24;
+    const gap = data.length <= 3 ? 16 : 10;
     const chartW = 240;
     const chartH = data.length * (barH + gap) - gap;
     const svgW = m.left + chartW + m.right;
