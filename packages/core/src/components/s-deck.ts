@@ -282,24 +282,54 @@ export class SDeck extends HTMLElement {
   private enterGrid() {
     if (this.isPresenting) this.exitPresent();
     this.isGridView = true;
+
+    // Wrap each slide in a grid cell
+    this.slides.forEach((slide, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'sd-grid-cell';
+      cell.setAttribute('data-grid-index', String(i));
+      this.insertBefore(cell, slide);
+      cell.appendChild(slide);
+      cell.addEventListener('click', this.handleGridClick);
+    });
+
     this.classList.add('sd-grid');
     this.updateToolbar();
 
-    // Click a slide to jump to it
-    this.slides.forEach((slide, i) => {
-      slide.addEventListener('click', this.handleGridClick);
-      slide.setAttribute('data-grid-index', String(i));
-    });
+    // Calculate scale after layout
+    requestAnimationFrame(() => this.updateGridScale());
   }
 
   private exitGrid() {
     this.isGridView = false;
     this.classList.remove('sd-grid');
-    this.updateToolbar();
 
-    this.slides.forEach((slide) => {
-      slide.removeEventListener('click', this.handleGridClick);
-      slide.removeAttribute('data-grid-index');
+    // Unwrap slides from grid cells
+    const cells = Array.from(this.querySelectorAll('.sd-grid-cell'));
+    cells.forEach((cell) => {
+      const slide = cell.querySelector('s-slide');
+      if (slide) {
+        (slide as HTMLElement).style.transform = '';
+        this.insertBefore(slide, cell);
+      }
+      cell.removeEventListener('click', this.handleGridClick);
+      cell.remove();
+    });
+
+    this.updateToolbar();
+  }
+
+  private updateGridScale() {
+    const cells = this.querySelectorAll('.sd-grid-cell');
+    cells.forEach((cell) => {
+      const slide = cell.querySelector('s-slide') as HTMLElement;
+      if (!slide) return;
+      const cellWidth = (cell as HTMLElement).offsetWidth;
+      const slideWidth = slide.offsetWidth;
+      if (slideWidth > 0) {
+        const scale = cellWidth / slideWidth;
+        slide.style.transform = `scale(${scale})`;
+      }
     });
   }
 
