@@ -1,0 +1,24 @@
+{
+  "name": "slide-deck",
+  "version": "0.1.0",
+  "description": "HTMLスライドを対話的に生成するClaude Codeプラグイン。Tailwind CSS + Web Componentsベースのフレームワークと連携し、PDF出力対応の高品質なプレゼンテーションを作成します。",
+  "author": {
+    "name": "tachibanayu24",
+    "url": "https://github.com/tachibanayu24"
+  },
+  "repository": "https://github.com/tachibanayu24/slide-deck",
+  "license": "MIT",
+  "keywords": ["slides", "presentation", "html", "tailwind", "pdf"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -d \"${CLAUDE_PLUGIN_DATA}/node_modules/puppeteer\" || (mkdir -p \"${CLAUDE_PLUGIN_DATA}\" && cd \"${CLAUDE_PLUGIN_DATA}\" && npm install --no-save puppeteer 2>/dev/null) || true"
+          }
+        ]
+      }
+    ]
+  }
+}

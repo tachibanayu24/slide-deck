@@ -5,8 +5,11 @@
 HTMLスライドフレームワーク（npm/CDN）+ Claude Code プラグインのモノレポ。
 
 - `packages/core/` — Web Components (`<s-deck>`, `<s-slide>`) + フレームワークCSS。esbuildでIIFEバンドル
-- `plugin/` — Claude Code プラグイン（Phase 2 で実装予定）
-- `examples/` — サンプルHTML
+- `plugin/` — Claude Code プラグイン（`/slide` コマンド、サブエージェント、スキル）
+  - `commands/slide.md` — 7フェーズワークフロー
+  - `agents/` — slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer
+  - `skills/slide-generation/` — フレームワークAPIリファレンス
+  - `bin/slide-screenshot` — Puppeteerベースのスクリーンショット撮影CLI
 - `docs/` — 設計ドキュメント
 
 ## ビルド

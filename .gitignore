@@ -19,5 +19,13 @@ coverage/
 # OS
 Thumbs.db
 
+# Generated slides and screenshots
+examples/
+slides/
+.screenshots/
+
+# Claude Code
+.claude/
+
 # Reference PDFs (internal/confidential)
 docs/examples/

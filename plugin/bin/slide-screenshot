@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+
+const filePath = process.argv[2];
+if (!filePath) {
+  console.error('Usage: slide-screenshot <html-file>');
+  process.exit(1);
+}
+
+const absPath = path.resolve(filePath);
+if (!fs.existsSync(absPath)) {
+  console.error(`File not found: ${absPath}`);
+  process.exit(1);
+}
+
+let puppeteer;
+try {
+  // Try CLAUDE_PLUGIN_DATA first, then global
+  const dataDir = process.env.CLAUDE_PLUGIN_DATA;
+  if (dataDir) {
+    try {
+      puppeteer = require(path.join(dataDir, 'node_modules', 'puppeteer'));
+    } catch {
+      puppeteer = require('puppeteer');
+    }
+  } else {
+    puppeteer = require('puppeteer');
+  }
+} catch {
+  console.error('puppeteer is not installed.');
+  console.error('Run: npm install puppeteer');
+  process.exit(1);
+}
+
+(async () => {
+  const outDir = path.join(path.dirname(absPath), '.screenshots');
+  fs.mkdirSync(outDir, { recursive: true });
+
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  // s-slide is 297mm x 167mm ≈ 1123px x 631px at 96dpi
+  // Use a wider viewport to ensure full slide is visible
+  await page.setViewport({ width: 1400, height: 900 });
+
+  await page.goto(`file://${absPath}`, {
+    waitUntil: 'networkidle0',
+    timeout: 20000,
+  });
+
+  // Wait a bit for Tailwind CDN to apply styles
+  await new Promise((r) => setTimeout(r, 1000));
+
+  const slides = await page.$$('s-slide');
+
+  for (let i = 0; i < slides.length; i++) {
+    const outPath = path.join(outDir, `slide-${i + 1}.png`);
+    await slides[i].screenshot({ path: outPath });
+    console.log(outPath);
+  }
+
+  await browser.close();
+})();
