@@ -1,0 +1,23 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Environment
+.env
+.env.local
+
+# Test / coverage
+coverage/
+
+# OS
+Thumbs.db
+
+# Reference PDFs (internal/confidential)
+docs/examples/

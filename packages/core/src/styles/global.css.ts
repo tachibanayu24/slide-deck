@@ -1,0 +1,256 @@
+export function injectGlobalStyles() {
+  if (document.getElementById('sd-global-styles')) return;
+
+  // Google Fonts
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap';
+  document.head.appendChild(link);
+
+  // Framework CSS
+  const style = document.createElement('style');
+  style.id = 'sd-global-styles';
+  style.textContent = FRAMEWORK_CSS;
+  document.head.appendChild(style);
+}
+
+/**
+ * Framework-owned CSS only.
+ * Typography, spacing, colors inside slides → Tailwind classes.
+ */
+const FRAMEWORK_CSS = /* css */ `
+/* ============================================
+   slide-deck — Framework CSS
+   Only structural concerns. Content styling is Tailwind's job.
+   ============================================ */
+
+/* --- Body Reset --- */
+body {
+  margin: 0;
+  padding: 0;
+  background: #f1f5f9;
+}
+
+/* --- Deck Container --- */
+s-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 3rem 0 6rem;
+  min-height: 100vh;
+}
+
+/* --- Slide Base --- */
+s-slide {
+  display: flex;
+  flex-direction: column;
+  width: 297mm;
+  height: 167mm;
+  padding: 3rem;
+  box-sizing: border-box;
+  position: relative;
+  background: #ffffff;
+  color: #0f172a;
+  overflow: hidden;
+  font-family: 'Noto Sans JP', system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* --- Page Number --- */
+s-slide::after {
+  content: attr(data-page) ' / ' attr(data-total);
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Theme: Dark --- */
+s-slide[theme="dark"] {
+  color: #e2e8f0;
+}
+
+s-slide[theme="dark"]::after {
+  color: #64748b;
+}
+
+/* ============================================
+   Layout Presets
+   ============================================ */
+
+/* Title — centered, dramatic */
+s-slide[layout="title"] {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Text — vertical flow */
+s-slide[layout="text"] {
+  justify-content: flex-start;
+}
+
+/* Text + Image — left text, right visual */
+s-slide[layout="text-image"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Image + Text — left visual, right text */
+s-slide[layout="image-text"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Two Column */
+s-slide[layout="two-column"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* 2x2 Grid */
+s-slide[layout="grid-2x2"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Full Image */
+s-slide[layout="full-image"] {
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+s-slide[layout="full-image"] img,
+s-slide[layout="full-image"] svg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Chart — narrow text + wide chart area */
+s-slide[layout="chart"] {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Section — accent bar, for section breaks */
+s-slide[layout="section"] {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+s-slide[layout="section"]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: #2563eb;
+}
+
+/* --- data-area: visual (auto-center content) --- */
+[data-area="visual"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+[data-area="visual"] img,
+[data-area="visual"] svg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* ============================================
+   Presentation Mode (Fullscreen)
+   ============================================ */
+s-deck:fullscreen,
+s-deck.sd-fullscreen {
+  background: #000;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+  overflow: hidden;
+}
+
+s-deck:fullscreen s-slide,
+s-deck.sd-fullscreen s-slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-radius: 0;
+}
+
+s-deck:fullscreen s-slide.sd-active,
+s-deck.sd-fullscreen s-slide.sd-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 1;
+}
+
+/* ============================================
+   Print
+   ============================================ */
+@media print {
+  @page {
+    size: 297mm 167mm;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    background: none;
+  }
+
+  s-deck {
+    display: block;
+    padding: 0;
+    gap: 0;
+    background: none;
+  }
+
+  s-slide {
+    width: 100vw;
+    height: 100vh;
+    box-shadow: none;
+    border-radius: 0;
+    break-inside: avoid;
+    page-break-after: always;
+  }
+
+  s-slide:last-child {
+    page-break-after: auto;
+  }
+
+  .sd-no-print {
+    display: none !important;
+  }
+}
+`;
