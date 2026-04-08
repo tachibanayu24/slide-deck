@@ -27,6 +27,7 @@ disable-model-invocation: true
 - トーン: [推測]
 - 対象: [推測]
 - 枚数: [推測]
+- コピーライト: [推測 — 個人なら「©氏名」、会社なら「©社名 Inc.」、不要なら空欄]
 - 特に入れたい要素: あれば教えてください
 ```
 
@@ -133,7 +134,7 @@ HTMLテンプレート:
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
 </head>
 <body>
-  <s-deck>
+  <s-deck copyright="©Company Inc.">
     <!-- s-slide 要素をここに -->
   </s-deck>
 </body>

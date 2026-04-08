@@ -198,3 +198,67 @@ copyright + section を活用した、プロフェッショナルな構成例。
   <p class="text-slate-500">補足説明があればここに。</p>
 </s-slide>
 ```
+
+## パターン11: 4象限マトリクス（grid-2x2）
+
+SWOT分析、比較表、分類に最適。
+
+```html
+<s-slide layout="grid-2x2" section="Analysis">
+  <div class="bg-blue-50 rounded-lg p-5">
+    <h3 class="text-lg font-bold text-blue-800 mb-2">Strengths</h3>
+    <ul class="text-sm text-slate-600 space-y-1">
+      <li>強み1</li>
+      <li>強み2</li>
+    </ul>
+  </div>
+  <div class="bg-amber-50 rounded-lg p-5">
+    <h3 class="text-lg font-bold text-amber-800 mb-2">Weaknesses</h3>
+    <ul class="text-sm text-slate-600 space-y-1">
+      <li>弱み1</li>
+    </ul>
+  </div>
+  <div class="bg-emerald-50 rounded-lg p-5">
+    <h3 class="text-lg font-bold text-emerald-800 mb-2">Opportunities</h3>
+    <ul class="text-sm text-slate-600 space-y-1">
+      <li>機会1</li>
+    </ul>
+  </div>
+  <div class="bg-red-50 rounded-lg p-5">
+    <h3 class="text-lg font-bold text-red-800 mb-2">Threats</h3>
+    <ul class="text-sm text-slate-600 space-y-1">
+      <li>脅威1</li>
+    </ul>
+  </div>
+</s-slide>
+```
+
+## パターン12: チャート主体（chart）
+
+左に要約テキスト、右にSVGチャート。
+
+```html
+<s-slide layout="chart" section="Data">
+  <div>
+    <h2 class="text-2xl font-bold mb-3">売上推移</h2>
+    <p class="text-sm text-slate-500 mb-4">前年比120%の成長</p>
+    <div class="text-3xl font-black text-blue-600">¥1.2B</div>
+    <p class="text-sm text-slate-400">2026年Q1実績</p>
+  </div>
+  <div>
+    <svg viewBox="0 0 400 280" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family: system-ui, sans-serif;">
+      <!-- 棒グラフなどのSVG -->
+    </svg>
+  </div>
+</s-slide>
+```
+
+## パターン13: 全面ビジュアル（full-image）
+
+スクリーンショットや大きな図解を全面表示。
+
+```html
+<s-slide layout="full-image" section="Demo">
+  <img src="screenshot.png" alt="デモ画面" class="rounded-lg shadow-lg">
+</s-slide>
+```
