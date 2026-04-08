@@ -16,21 +16,37 @@ if (!fs.existsSync(absPath)) {
 }
 
 let puppeteer;
-try {
-  // Try CLAUDE_PLUGIN_DATA first, then global
-  const dataDir = process.env.CLAUDE_PLUGIN_DATA;
-  if (dataDir) {
-    try {
-      puppeteer = require(path.join(dataDir, 'node_modules', 'puppeteer'));
-    } catch {
-      puppeteer = require('puppeteer');
-    }
-  } else {
-    puppeteer = require('puppeteer');
+
+function tryRequire(name) {
+  const dirs = [
+    process.env.CLAUDE_PLUGIN_DATA,
+    path.join(__dirname, '..'),
+  ].filter(Boolean);
+  for (const dir of dirs) {
+    try { return require(path.join(dir, 'node_modules', name)); } catch {}
   }
-} catch {
-  console.error('puppeteer is not installed.');
-  console.error('Run: npm install puppeteer');
+  try { return require(name); } catch {}
+  return null;
+}
+
+puppeteer = tryRequire('puppeteer');
+
+if (!puppeteer) {
+  const installDir = process.env.CLAUDE_PLUGIN_DATA || path.join(__dirname, '..');
+  console.error('puppeteer not found. Installing...');
+  try {
+    fs.mkdirSync(installDir, { recursive: true });
+    // Safe: all arguments are hardcoded, no user input
+    require('child_process').execFileSync(
+      'npm', ['install', '--no-save', 'puppeteer'],
+      { cwd: installDir, stdio: 'inherit', timeout: 120000 },
+    );
+    puppeteer = tryRequire('puppeteer');
+  } catch {}
+}
+
+if (!puppeteer) {
+  console.error('Failed to install puppeteer.');
   process.exit(1);
 }
 

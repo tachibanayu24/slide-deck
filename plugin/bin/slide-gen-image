@@ -89,23 +89,37 @@ if (!apiKey) {
   process.exit(1);
 }
 
-// --- Load sharp (CLAUDE_PLUGIN_DATA → global fallback) ---
+// --- Load sharp (CLAUDE_PLUGIN_DATA → plugin-local → global → auto-install) ---
 
-let sharp;
-try {
-  const dataDir = process.env.CLAUDE_PLUGIN_DATA;
-  if (dataDir) {
-    try {
-      sharp = require(path.join(dataDir, 'node_modules', 'sharp'));
-    } catch {
-      sharp = require('sharp');
-    }
-  } else {
-    sharp = require('sharp');
+function tryRequire(name) {
+  const dirs = [
+    process.env.CLAUDE_PLUGIN_DATA,
+    path.join(__dirname, '..'),
+  ].filter(Boolean);
+  for (const dir of dirs) {
+    try { return require(path.join(dir, 'node_modules', name)); } catch {}
   }
-} catch {
-  console.error('sharp is not installed.');
-  console.error('Run: npm install sharp');
+  try { return require(name); } catch {}
+  return null;
+}
+
+let sharp = tryRequire('sharp');
+
+if (!sharp) {
+  const installDir = process.env.CLAUDE_PLUGIN_DATA || path.join(__dirname, '..');
+  console.error('sharp not found. Installing...');
+  try {
+    fs.mkdirSync(installDir, { recursive: true });
+    require('child_process').execFileSync(
+      'npm', ['install', '--no-save', 'sharp'],
+      { cwd: installDir, stdio: 'inherit', timeout: 120000 },
+    );
+    sharp = tryRequire('sharp');
+  } catch {}
+}
+
+if (!sharp) {
+  console.error('Failed to install sharp.');
   process.exit(1);
 }
 
