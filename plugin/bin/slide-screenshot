@@ -46,12 +46,18 @@ try {
   await page.setViewport({ width: 1400, height: 900 });
 
   await page.goto(`file://${absPath}`, {
-    waitUntil: 'networkidle0',
+    waitUntil: 'networkidle2',
     timeout: 20000,
   });
 
   // Wait a bit for Tailwind CDN to apply styles
   await new Promise((r) => setTimeout(r, 1000));
+
+  // Hide the toolbar so it doesn't appear in screenshots
+  await page.evaluate(() => {
+    const toolbar = document.querySelector('s-deck')?.nextElementSibling;
+    if (toolbar) toolbar.style.display = 'none';
+  });
 
   const slides = await page.$$('s-slide');
 
