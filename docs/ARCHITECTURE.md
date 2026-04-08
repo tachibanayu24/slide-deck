@@ -56,18 +56,19 @@ slide-deck/
 
 | コンポーネント | 役割 | 状態 |
 |---|---|---|
-| `<s-deck>` | スライドコンテナ。ページ番号、ツールバー（ナビ/プレゼン/PDF）、キーボード操作 | 実装済み |
-| `<s-slide>` | 個別スライド。`layout` / `theme` / `bg` 属性 | 実装済み |
-| `<s-chart>` | データ可視化。`type` + `data` でSVG描画 | Phase 3 |
-| `<s-mermaid>` | Mermaid.jsラッパー | Phase 3 |
+| `<s-deck>` | スライドコンテナ。フッターバー、ツールバー（ナビ/グリッド/プレゼン/PDF）、キーボード操作。`copyright` 属性 | ✅ |
+| `<s-slide>` | 個別スライド。`layout` / `theme` / `bg` / `section` 属性 | ✅ |
+| `<s-chart>` | データ可視化。`type` + `data` でSVG描画 | Phase 3c |
+| `<s-mermaid>` | Mermaid.jsラッパー | Phase 3c |
 
 ### `<s-slide>` 属性
 
 | 属性 | 説明 | 例 |
 |---|---|---|
-| `layout` | レイアウトプリセット | `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section` |
+| `layout` | レイアウトプリセット | `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc` |
 | `theme` | テーマ。`dark` でテキスト色を自動反転 | `dark` |
 | `bg` | 背景。CSSの `background` 値 | `#0f172a`, `linear-gradient(...)` |
+| `section` | フッター左側に表示するセクション名 | `Introduction` |
 
 ### `data-area` 属性
 
@@ -98,6 +99,7 @@ slide-deck/
 | `full-image` | flex / center | 全面画像/図解 |
 | `chart` | grid 2fr 3fr | テキスト + チャート |
 | `section` | flex + accent bar | セクション区切り |
+| `toc` | grid 1fr 2fr | 目次 |
 
 ## プラグイン設計
 
@@ -117,12 +119,14 @@ slide-deck/
 
 ### このプラグインで使うもの
 
-| コンポーネント | 用途 |
-|---|---|
-| **Skills** | フレームワークAPIリファレンス、レイアウト選択ガイド、生成ベストプラクティス |
-| **Commands** | `/slide` — スライド生成ワークフロー起動 |
-| **Examples** | サンプルスライドHTML（few-shot用） |
-| **MCP Server** | Gemini画像生成連携（Phase 3、APIキー要） |
+| コンポーネント | 用途 | 状態 |
+|---|---|---|
+| **Commands** | `/slide` — 7フェーズスライド生成ワークフロー | ✅ |
+| **Skills** | フレームワークAPIリファレンス、デザイン原則、13パターン例 | ✅ |
+| **Agents** | slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer | ✅ |
+| **Bin** | `slide-screenshot` — Puppeteerスクリーンショット撮影 | ✅ |
+| **Bin** | `slide-gen-image` — Gemini画像生成CLI | Phase 3a |
+| **Hooks** | SessionStart — puppeteer自動インストール | ✅ |
 
 フィードバック蓄積は `CLAUDE_PLUGIN_DATA` に保存。
 
@@ -143,25 +147,52 @@ slide-deck/
 
 ### Phase 1: フレームワーク基盤 ✅
 
-- `<s-deck>` — ツールバー、ページ番号、プレゼンモード、キーボードナビ
-- `<s-slide>` — 9種レイアウトプリセット、`theme`/`bg` 属性、`data-area`
+- `<s-deck>` — ツールバー、ページ番号、プレゼンモード、キーボードナビ、グリッドビュー
+- `<s-slide>` — 10種レイアウトプリセット、`theme`/`bg`/`section` 属性、`data-area`
+- `copyright` 属性 → フッターバー（左: ページ番号+セクション名、右: コピーライト）
 - Tailwind CSS CDN 統合
-- フレームワークCSS（構造のみ、タイポグラフィはTailwind）
+- フレームワークCSS（構造 + テーブル/リスト/コードのベーススタイル）
 - print CSS（16:9、余白なし）
-- サンプルHTML
 
-### Phase 2: Claude Codeプラグイン
+### Phase 2: Claude Codeプラグイン ✅
 
-- プラグイン骨格（plugin.json, `/slide` コマンド, スキル）
-- Claudeにスライド生成を指示して検証
-- **ここで生成品質のフィードバックループが始まる**
+- `/slide` コマンド — 7フェーズワークフロー（Discovery → Review → Summary）
+- サブエージェント4種 — slide-researcher, slide-visual, slide-reviewer, slide-visual-reviewer
+- slide-generation スキル — APIリファレンス、デザイン原則、13パターン例
+- `bin/slide-screenshot` — Puppeteer でスクリーンショット撮影（ビジュアルレビュー用）
+- SessionStart フックで puppeteer 自動インストール
+- **生成品質のフィードバックループが回り始めた。まだシンプルすぎる課題あり**
 
-### Phase 3: コンポーネント拡充
+### Phase 3: コンポーネント拡充 + 生成品質向上（次のセッションから）
 
-- `<s-chart>` — 棒グラフ、横棒、ドーナツ（SVG描画）
+#### 3a. Gemini画像生成連携（最優先）
+
+参考実装: `tachibanayu24/article-writer` の `scripts/gen-ogp.mjs`
+- Gemini API (`gemini-3.1-flash-image-preview`) で3Dオブジェクト/イラストを生成
+- 白背景→透過変換して合成可能に
+- スライド全体で統一感のあるスタイルディレクティブを使い回す
+
+実装計画:
+- `plugin/bin/slide-gen-image` — Gemini画像生成CLI（GEMINI_API_KEY は .env から読み込み、なければSVGフォールバック）
+- Phase 5 で slide-visual エージェントが SVG か Gemini画像か判断
+- 用途: 表紙/セクション区切りの背景、text-image の visual 側、装飾要素
+- デッキ全体の統一感: 共通のスタイルディレクティブ（色味、質感、3D clay-like等）
+
+#### 3b. 生成プロンプトの品質向上
+
+- 現状「正しいHTML」寄りの生成指示を「視覚的に印象的」に転換
+- グラデーション背景のバリエーション、カード装飾、アクセントカラーの戦略ガイド強化
+- スタイルプリセット選択（Phase 1 で「ミニマル」「コーポレート」「カラフル」等を選べるように）
+
+#### 3c. データ可視化コンポーネント
+
+- `<s-chart>` — 棒グラフ、横棒、ドーナツ（SVG描画、`type` + `data` 属性）
 - `<s-mermaid>` — Mermaid.js統合
-- Gemini画像生成MCP連携
-- コンポーネント追加ごとにプラグインリファレンス更新 → Claudeで生成テスト
+
+#### 3d. ヘッダー機構
+
+- フッターと対になる上部ヘッダー（ロゴ+セクション名のスロット）
+- 参考PDFのLayerX Company Deck / LTスライドに見られるパターン
 
 ### Phase 4: 公開
 
