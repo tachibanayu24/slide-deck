@@ -34,7 +34,7 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
 </head>
 <body>
-  <s-deck>
+  <s-deck copyright="©Company Inc.">
     <!-- s-slide 要素をここに並べる -->
   </s-deck>
 </body>
@@ -46,11 +46,19 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 ### `<s-deck>`
 
 スライド全体のコンテナ。自動で以下を提供：
-- ページ番号（各スライド右下）
+- フッターバー（左: ページ番号+セクション名、右: コピーライト）
 - ツールバー（画面下部: ナビゲーション、プレゼンモード、PDF出力）
 - キーボードナビゲーション（プレゼンモード時: ← → Space Esc）
 
-属性なし。`<s-slide>` 要素を直接の子として配置するだけ。
+| 属性 | 必須 | 説明 |
+|---|---|---|
+| `copyright` | 任意 | フッター右側に表示するコピーライト（例: `©Company Inc.`） |
+
+```html
+<s-deck copyright="©Company Inc.">
+  <s-slide>...</s-slide>
+</s-deck>
+```
 
 ### `<s-slide>`
 
@@ -61,6 +69,12 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `layout` | 推奨 | レイアウトプリセット。省略時は `text` |
 | `theme` | 任意 | `dark` を指定するとテキスト色を明色に自動切替 |
 | `bg` | 任意 | 背景。CSSの `background` に渡す値 |
+| `section` | 任意 | フッター左側に表示するセクション名（例: `section="Introduction"`） |
+
+フッターの表示ルール：
+- `section` 属性あり → 左フッターに `ページ番号 | セクション名`
+- `section` 属性なし → 左フッターに `ページ番号 / 総数`
+- `layout="title"` → フッター非表示（表紙・裏表紙用）
 
 ### `data-area` 属性（子要素）
 
@@ -142,7 +156,60 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 
 ### `section` — セクション区切り
 - 用途: 章の区切り、トピック転換
-- 左端に青いアクセントバー
+- ライトテーマ: 左端に青いアクセントバー
+- ダークテーマ + bg: 全画面カラー背景の章区切り（`title` でも代用可）
+
+```html
+<!-- ライトテーマ: アクセントバー付き -->
+<s-slide layout="section">
+  <p class="text-sm text-blue-600 font-semibold">Chapter 1</p>
+  <h2 class="text-4xl font-black mt-2">はじめに</h2>
+</s-slide>
+
+<!-- ダークテーマ: 全画面カラー背景 -->
+<s-slide layout="section" theme="dark" bg="linear-gradient(135deg, #2563eb, #7c3aed)">
+  <p class="text-8xl font-black text-white/30">1</p>
+  <h2 class="text-4xl font-black text-white mt-4">はじめに</h2>
+</s-slide>
+```
+
+### `toc` — 目次
+- 用途: 目次ページ、章の一覧
+- 構造: grid 1fr 2fr（左ラベル、右コンテンツ）
+- 子要素2つ必要
+
+```html
+<s-slide layout="toc">
+  <div>
+    <p class="text-sm text-blue-600 font-semibold">Agenda</p>
+    <h2 class="text-3xl font-black mt-1">目次</h2>
+  </div>
+  <div class="space-y-4">
+    <div><span class="text-3xl font-black text-slate-800 mr-4">1</span><span class="text-xl font-bold">テーマ名</span></div>
+    <div><span class="text-3xl font-black text-slate-800 mr-4">2</span><span class="text-xl font-bold">テーマ名</span></div>
+  </div>
+</s-slide>
+```
+
+## デザイン基本原則
+
+### 共通ルール
+- **整列と一貫性**: 全要素をグリッドに沿って配置。マージン、フォント、配色を全ページ統一
+- **視覚的階層化**: 大見出し＞中見出し＞本文をサイズ・太さ・色で明確に区別し視線を誘導
+- **色彩戦略**: ベース、メイン、アクセントの3〜5色に限定。装飾着色を排除し強調箇所のみに色を使用
+- **ノイズの排除**: 無意味な罫線・枠線・装飾を徹底排除
+
+### 投影用スライド（プレゼン向け）
+対象: LT、カンファレンス発表、社内プレゼン
+- **1 Slide, 1 Message**: 1ページ1メッセージ。「瞬時に見て伝わる」量に絞る
+- **視認性最大化**: 文字は大きく、太いウェイト（`text-3xl font-bold` 以上）
+- **余白の解放**: ネガティブスペースを多く取り、焦点を際立たせる
+
+### 配布用スライド（読解・ドキュメント向け）
+対象: カンパニーデック、報告書、社内共有資料
+- **構造化密度**: 上部リード文 + 下部に複数の論拠。情報の網羅性・正確性を担保
+- **読解タイポグラフィ**: 適切な文字サイズ（`text-sm` 〜 `text-base`）、ゆとりある行間
+- **境界線としての余白**: 情報チャンクを論理ブロックに区切る
 
 ## スタイリングガイドライン
 

@@ -62,16 +62,42 @@ s-slide {
   -webkit-print-color-adjust: exact;
 }
 
-/* --- Page Number --- */
-s-slide::after {
+/* --- Footer Bar --- */
+
+/* Left footer: page number | section name */
+s-slide::before {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.5rem;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+s-slide[section]::before {
+  content: attr(data-page) '  |  ' attr(section);
+}
+
+s-slide:not([section])::before {
   content: attr(data-page) ' / ' attr(data-total);
+}
+
+/* Right footer: copyright */
+s-slide::after {
+  content: attr(data-copyright);
   position: absolute;
   bottom: 1.25rem;
   right: 1.5rem;
   font-size: 0.7rem;
   color: #94a3b8;
   letter-spacing: 0.05em;
-  font-variant-numeric: tabular-nums;
+}
+
+/* Hide footer on title slides */
+s-slide[layout="title"]::before,
+s-slide[layout="title"]::after {
+  content: none;
 }
 
 /* --- Theme: Dark --- */
@@ -79,6 +105,7 @@ s-slide[theme="dark"] {
   color: #e2e8f0;
 }
 
+s-slide[theme="dark"]::before,
 s-slide[theme="dark"]::after {
   color: #64748b;
 }
@@ -153,13 +180,14 @@ s-slide[layout="chart"] {
   align-items: center;
 }
 
-/* Section — accent bar, for section breaks */
+/* Section — for section breaks / chapter dividers */
 s-slide[layout="section"] {
   justify-content: center;
   align-items: flex-start;
+  padding: 4rem;
 }
 
-s-slide[layout="section"]::before {
+s-slide[layout="section"]:not([theme="dark"])::before {
   content: '';
   position: absolute;
   left: 0;
@@ -167,6 +195,14 @@ s-slide[layout="section"]::before {
   bottom: 0;
   width: 6px;
   background: #2563eb;
+}
+
+/* TOC — left label + right content */
+s-slide[layout="toc"] {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: center;
 }
 
 /* ============================================

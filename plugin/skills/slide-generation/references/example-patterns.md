@@ -110,19 +110,87 @@
 </s-slide>
 ```
 
-## パターン6: セクション区切り
+## パターン6: セクション区切り（ライト）
 
 ```html
-<s-slide layout="section" bg="#f8fafc">
-  <h2 class="text-4xl font-bold text-slate-800">セクション名</h2>
-  <p class="text-lg text-slate-400 mt-2">セクションの概要</p>
+<s-slide layout="section" section="Introduction">
+  <p class="text-sm text-blue-600 font-semibold tracking-wider uppercase">Chapter 1</p>
+  <h2 class="text-4xl font-black text-slate-800 mt-2">はじめに</h2>
+  <p class="text-lg text-slate-400 mt-3">セクションの概要</p>
 </s-slide>
 ```
 
-## パターン7: 引用・ハイライト
+## パターン7: セクション区切り（ダーク・全画面カラー）
 
 ```html
-<s-slide layout="text">
+<s-slide layout="section" theme="dark" bg="linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)">
+  <p class="text-9xl font-black text-white/20 leading-none">1</p>
+  <h2 class="text-4xl font-black text-white mt-4">はじめに</h2>
+  <p class="text-lg text-blue-200 mt-2">セクションの概要</p>
+</s-slide>
+```
+
+## パターン8: 目次（toc）
+
+```html
+<s-slide layout="toc" section="Contents">
+  <div>
+    <p class="text-sm text-blue-600 font-semibold tracking-wider uppercase">Agenda</p>
+    <h2 class="text-3xl font-black mt-1">目次</h2>
+  </div>
+  <div class="space-y-5">
+    <div class="flex items-baseline gap-4">
+      <span class="text-4xl font-black text-slate-800">1</span>
+      <div>
+        <p class="text-xl font-bold text-slate-800 m-0">セクション名</p>
+        <p class="text-sm text-slate-400 m-0">サブタイトル</p>
+      </div>
+    </div>
+    <div class="flex items-baseline gap-4">
+      <span class="text-4xl font-black text-slate-800">2</span>
+      <div>
+        <p class="text-xl font-bold text-slate-800 m-0">セクション名</p>
+        <p class="text-sm text-slate-400 m-0">サブタイトル</p>
+      </div>
+    </div>
+  </div>
+</s-slide>
+```
+
+## パターン9: フッター付き構成（推奨テンプレート）
+
+copyright + section を活用した、プロフェッショナルな構成例。
+
+```html
+<s-deck copyright="©Company Inc.">
+  <!-- 表紙: フッター非表示 -->
+  <s-slide layout="title" theme="dark" bg="linear-gradient(135deg, #0f172a, #1e3a5f)">
+    <h1 class="text-5xl font-black text-white">タイトル</h1>
+    <p class="text-xl text-slate-400 mt-4">サブタイトル</p>
+  </s-slide>
+
+  <!-- 目次: section 属性でフッターにセクション名 -->
+  <s-slide layout="toc" section="Contents">
+    ...
+  </s-slide>
+
+  <!-- 本文: セクション名がフッター左に表示される -->
+  <s-slide layout="text" section="Background">
+    <h2 class="text-3xl font-bold mb-6">見出し</h2>
+    ...
+  </s-slide>
+
+  <!-- 裏表紙: フッター非表示 -->
+  <s-slide layout="title" theme="dark" bg="linear-gradient(135deg, #1e293b, #0f172a)">
+    <h1 class="text-4xl font-black text-white">Thank you</h1>
+  </s-slide>
+</s-deck>
+```
+
+## パターン10: 引用・ハイライト
+
+```html
+<s-slide layout="text" section="Insights">
   <h2 class="text-2xl font-bold mb-6">キーメッセージ</h2>
   <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-5 mb-4">
     <p class="text-blue-900 text-lg font-medium m-0">強調したいメッセージをここに。</p>

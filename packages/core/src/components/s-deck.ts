@@ -93,6 +93,10 @@ export class SDeck extends HTMLElement {
   private scrollObserver: IntersectionObserver | null = null;
   private initialized = false;
 
+  static get observedAttributes() {
+    return ['copyright'];
+  }
+
   private readonly handleKeydown = (e: KeyboardEvent) => {
     if (!this.isPresenting) return;
     switch (e.key) {
@@ -150,12 +154,26 @@ export class SDeck extends HTMLElement {
     return Array.from(this.querySelectorAll('s-slide'));
   }
 
+  attributeChangedCallback() {
+    if (this.initialized) {
+      this.propagateDeckAttributes();
+    }
+  }
+
   private setupPageNumbers() {
     const slides = this.slides;
     const total = slides.length;
     slides.forEach((slide, i) => {
       slide.setAttribute('data-page', String(i + 1));
       slide.setAttribute('data-total', String(total));
+    });
+    this.propagateDeckAttributes();
+  }
+
+  private propagateDeckAttributes() {
+    const copyright = this.getAttribute('copyright') || '';
+    this.slides.forEach((slide) => {
+      slide.setAttribute('data-copyright', copyright);
     });
   }
 

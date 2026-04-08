@@ -61,11 +61,18 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
   <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
 </head>
 <body>
-  <s-deck>
-    <s-slide layout="..." theme="..." bg="...">
-      <!-- Tailwind classes でスタイリング -->
+  <s-deck copyright="©Company Inc.">
+    <s-slide layout="title" theme="dark" bg="...">
+      <!-- 表紙: フッター非表示 -->
+    </s-slide>
+    <s-slide layout="text" section="セクション名">
+      <!-- 本文: 左フッターにセクション名 -->
     </s-slide>
   </s-deck>
 </body>
 </html>
 ```
+
+### レイアウト一覧
+
+`title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc`
