@@ -326,6 +326,55 @@ s-deck.sd-fullscreen s-slide.sd-active {
 }
 
 /* ============================================
+   Grid View (Slide Overview)
+   ============================================ */
+s-deck.sd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  align-items: start;
+}
+
+s-deck.sd-grid s-slide {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 297 / 167;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: sd-grid-in 0.35s ease both;
+}
+
+s-deck.sd-grid s-slide:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 2px #2563eb;
+}
+
+@keyframes sd-grid-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stagger animation per slide */
+s-deck.sd-grid s-slide:nth-child(1)  { animation-delay: 0ms; }
+s-deck.sd-grid s-slide:nth-child(2)  { animation-delay: 40ms; }
+s-deck.sd-grid s-slide:nth-child(3)  { animation-delay: 80ms; }
+s-deck.sd-grid s-slide:nth-child(4)  { animation-delay: 120ms; }
+s-deck.sd-grid s-slide:nth-child(5)  { animation-delay: 160ms; }
+s-deck.sd-grid s-slide:nth-child(6)  { animation-delay: 200ms; }
+s-deck.sd-grid s-slide:nth-child(7)  { animation-delay: 240ms; }
+s-deck.sd-grid s-slide:nth-child(8)  { animation-delay: 280ms; }
+s-deck.sd-grid s-slide:nth-child(9)  { animation-delay: 320ms; }
+s-deck.sd-grid s-slide:nth-child(10) { animation-delay: 360ms; }
+s-deck.sd-grid s-slide:nth-child(n+11) { animation-delay: 400ms; }
+
+/* ============================================
    Print
    ============================================ */
 @media print {

@@ -88,6 +88,7 @@ const TOOLBAR_CSS = /* css */ `
 export class SDeck extends HTMLElement {
   private currentSlide = 0;
   private isPresenting = false;
+  private isGridView = false;
   private toolbar: ShadowRoot | null = null;
   private toolbarHost: HTMLElement | null = null;
   private scrollObserver: IntersectionObserver | null = null;
@@ -189,6 +190,7 @@ export class SDeck extends HTMLElement {
       '  <span class="page-info"><span class="current">1</span> / <span class="total">1</span></span>',
       '  <button class="btn-next" title="次のスライド"><span class="icon">\u25B6</span></button>',
       '  <div class="sep"></div>',
+      '  <button class="btn-grid" title="一覧表示"><span class="icon">\u2261</span></button>',
       '  <button class="btn-present" title="プレゼンテーション"><span class="icon">\u25A3</span></button>',
       '  <button class="btn-pdf" title="PDF出力"><span class="icon">\u2193</span> PDF</button>',
       '</div>',
@@ -201,6 +203,7 @@ export class SDeck extends HTMLElement {
     // Toolbar elements are created above, safe to query
     this.toolbar.querySelector('.btn-prev')?.addEventListener('click', () => this.prev());
     this.toolbar.querySelector('.btn-next')?.addEventListener('click', () => this.next());
+    this.toolbar.querySelector('.btn-grid')?.addEventListener('click', () => this.toggleGrid());
     this.toolbar.querySelector('.btn-present')?.addEventListener('click', () => this.togglePresent());
     this.toolbar.querySelector('.btn-pdf')?.addEventListener('click', () => window.print());
 
@@ -214,6 +217,9 @@ export class SDeck extends HTMLElement {
 
     const presentBtn = this.toolbar.querySelector('.btn-present');
     if (presentBtn) presentBtn.classList.toggle('active', this.isPresenting);
+
+    const gridBtn = this.toolbar.querySelector('.btn-grid');
+    if (gridBtn) gridBtn.classList.toggle('active', this.isGridView);
   }
 
   private setupKeyboard() {
@@ -265,6 +271,51 @@ export class SDeck extends HTMLElement {
     this.goTo(Math.max(this.currentSlide - 1, 0));
   }
 
+  private toggleGrid() {
+    if (this.isGridView) {
+      this.exitGrid();
+    } else {
+      this.enterGrid();
+    }
+  }
+
+  private enterGrid() {
+    if (this.isPresenting) this.exitPresent();
+    this.isGridView = true;
+    this.classList.add('sd-grid');
+    this.updateToolbar();
+
+    // Click a slide to jump to it
+    this.slides.forEach((slide, i) => {
+      slide.addEventListener('click', this.handleGridClick);
+      slide.setAttribute('data-grid-index', String(i));
+    });
+  }
+
+  private exitGrid() {
+    this.isGridView = false;
+    this.classList.remove('sd-grid');
+    this.updateToolbar();
+
+    this.slides.forEach((slide) => {
+      slide.removeEventListener('click', this.handleGridClick);
+      slide.removeAttribute('data-grid-index');
+    });
+  }
+
+  private readonly handleGridClick = (e: Event) => {
+    const target = (e.currentTarget as HTMLElement);
+    const idx = Number(target.getAttribute('data-grid-index'));
+    if (!isNaN(idx)) {
+      this.exitGrid();
+      this.currentSlide = idx;
+      this.updateToolbar();
+      requestAnimationFrame(() => {
+        this.slides[idx]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  };
+
   private togglePresent() {
     if (this.isPresenting) {
       this.exitPresent();
@@ -275,6 +326,7 @@ export class SDeck extends HTMLElement {
 
   private enterPresent() {
     if (this.isPresenting) return;
+    if (this.isGridView) this.exitGrid();
     this.isPresenting = true;
     this.slides.forEach((s, i) => s.classList.toggle('sd-active', i === this.currentSlide));
 
