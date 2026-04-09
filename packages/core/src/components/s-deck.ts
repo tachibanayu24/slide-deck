@@ -212,6 +212,7 @@ export class SDeck extends HTMLElement {
 
   private createToolbar() {
     this.toolbarHost = document.createElement('div');
+    this.toolbarHost.className = 'sd-toolbar-host';
     this.toolbar = this.toolbarHost.attachShadow({ mode: 'open' });
 
     // Static toolbar template

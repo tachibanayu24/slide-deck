@@ -71,8 +71,13 @@ if (!puppeteer) {
 
   // Hide the toolbar so it doesn't appear in screenshots
   await page.evaluate(() => {
-    const toolbar = document.querySelector('s-deck')?.nextElementSibling;
-    if (toolbar) toolbar.style.display = 'none';
+    // Try class-based selector (v0.4.0+)
+    const toolbar = document.querySelector('.sd-toolbar-host');
+    if (toolbar) { toolbar.style.display = 'none'; return; }
+    // Fallback: find any body child with a shadow root (the toolbar host)
+    for (const child of document.body.children) {
+      if (child.shadowRoot) { child.style.display = 'none'; return; }
+    }
   });
 
   const slides = await page.$$('s-slide');

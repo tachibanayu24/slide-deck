@@ -98,6 +98,7 @@ s-slide[header][message]:not([layout="title"]):not([layout="section"]) {
   font-size: 0.8rem;
   line-height: 1.6;
   color: #334155;
+  grid-column: 1 / -1;
 }
 
 s-slide[theme="dark"] .sd-message {
@@ -131,9 +132,11 @@ s-slide::after {
   letter-spacing: 0.05em;
 }
 
-/* Hide footer on title slides */
+/* Hide footer on title and section slides */
 s-slide[layout="title"]::before,
-s-slide[layout="title"]::after {
+s-slide[layout="title"]::after,
+s-slide[layout="section"]::before,
+s-slide[layout="section"]::after {
   content: none;
 }
 
@@ -322,6 +325,11 @@ s-chart {
   align-items: center;
   width: 100%;
   height: 100%;
+  max-height: 100%;
+}
+
+s-chart svg {
+  max-height: 100%;
 }
 
 /* --- data-area: visual (auto-center content) --- */
