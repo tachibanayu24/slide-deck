@@ -166,8 +166,10 @@ HTMLテンプレート:
 `slide-generation` スキルを参照してください。重要なポイント：
 - 全スライドに `layout` 属性を設定
 - ダーク背景には `theme="dark"`
+- **`header` 属性でスライドタイトルを上部に表示**（title/section レイアウトでは自動非表示）
 - グリッドレイアウトの子要素に `data-area="text"` / `data-area="visual"`
 - スタイリングは Tailwind CSS クラスを使う
+- アイコンは `<i data-lucide="icon-name">` で Lucide を使う
 
 ### Gemini画像生成のセットアップ
 
