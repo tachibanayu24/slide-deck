@@ -62,6 +62,22 @@ s-slide {
   -webkit-print-color-adjust: exact;
 }
 
+/* --- Header Bar --- */
+.sd-header {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+s-slide[theme="dark"] .sd-header {
+  color: #64748b;
+}
+
 /* --- Footer Bar --- */
 
 /* Left footer: page number | section name */

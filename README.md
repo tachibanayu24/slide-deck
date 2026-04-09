@@ -113,6 +113,8 @@ claude
 | `layout` | レイアウトプリセット | `title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc` |
 | `theme` | テーマ。`dark` で文字色を自動反転 | `dark` |
 | `bg` | 背景。CSS の `background` 値 | `#0f172a`, `linear-gradient(...)` |
+| `header` | スライド上部に表示するタイトル | `IPO件数の推移` |
+| `section` | フッター左側のセクション名 | `市場概況` |
 
 ### `<s-chart>`
 

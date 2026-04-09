@@ -70,6 +70,7 @@ slide-deck/
 | `theme` | テーマ。`dark` でテキスト色を自動反転 | `dark` |
 | `bg` | 背景。CSSの `background` 値 | `#0f172a`, `linear-gradient(...)` |
 | `section` | フッター左側に表示するセクション名 | `Introduction` |
+| `header` | スライド上部に表示するタイトル（title/sectionでは非表示） | `IPO件数の推移` |
 
 ### `data-area` 属性
 

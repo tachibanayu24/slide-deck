@@ -132,6 +132,7 @@ export class SDeck extends HTMLElement {
 
     const ready = () => {
       this.setupPageNumbers();
+      this.setupHeaders();
       this.createToolbar();
       this.setupKeyboard();
       this.setupScrollObserver();
@@ -175,6 +176,21 @@ export class SDeck extends HTMLElement {
     const copyright = this.getAttribute('copyright') || '';
     this.slides.forEach((slide) => {
       slide.setAttribute('data-copyright', copyright);
+    });
+  }
+
+  private setupHeaders() {
+    const hiddenLayouts = ['title', 'section'];
+    this.slides.forEach((slide) => {
+      const header = slide.getAttribute('header');
+      const layout = slide.getAttribute('layout') || '';
+      if (!header || hiddenLayouts.includes(layout)) return;
+      // Avoid duplicate injection
+      if (slide.querySelector('.sd-header')) return;
+      const el = document.createElement('div');
+      el.className = 'sd-header';
+      el.textContent = header;
+      slide.appendChild(el);
     });
   }
 
