@@ -63,7 +63,22 @@ function resolveApiKey() {
     }
   }
 
-  // 3. .env file (search upward from cwd)
+  // 3. Well-known paths (fallback when CLAUDE_PLUGIN_DATA is not propagated)
+  const home = process.env.HOME || process.env.USERPROFILE;
+  if (home) {
+    const candidates = [
+      path.join(home, '.claude', 'plugins', 'data', 'slide-deck-inline', 'gemini-api-key'),
+      path.join(home, '.claude', 'plugins', 'data', 'slide-deck', 'gemini-api-key'),
+    ];
+    for (const p of candidates) {
+      if (fs.existsSync(p)) {
+        const key = fs.readFileSync(p, 'utf-8').trim();
+        if (key) return key;
+      }
+    }
+  }
+
+  // 4. .env file (search upward from cwd)
   let dir = process.cwd();
   while (true) {
     const envPath = path.join(dir, '.env');
@@ -92,8 +107,11 @@ if (!apiKey) {
 // --- Load sharp (CLAUDE_PLUGIN_DATA → plugin-local → global → auto-install) ---
 
 function tryRequire(name) {
+  const home = process.env.HOME || process.env.USERPROFILE;
   const dirs = [
     process.env.CLAUDE_PLUGIN_DATA,
+    home && path.join(home, '.claude', 'plugins', 'data', 'slide-deck-inline'),
+    home && path.join(home, '.claude', 'plugins', 'data', 'slide-deck'),
     path.join(__dirname, '..'),
   ].filter(Boolean);
   for (const dir of dirs) {
@@ -106,7 +124,10 @@ function tryRequire(name) {
 let sharp = tryRequire('sharp');
 
 if (!sharp) {
-  const installDir = process.env.CLAUDE_PLUGIN_DATA || path.join(__dirname, '..');
+  const home = process.env.HOME || process.env.USERPROFILE;
+  const installDir = process.env.CLAUDE_PLUGIN_DATA
+    || (home && path.join(home, '.claude', 'plugins', 'data', 'slide-deck-inline'))
+    || path.join(__dirname, '..');
   console.error('sharp not found. Installing...');
   try {
     fs.mkdirSync(installDir, { recursive: true });

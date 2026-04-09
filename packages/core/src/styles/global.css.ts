@@ -68,20 +68,26 @@ s-slide {
   top: 1.25rem;
   left: 1.5rem;
   right: 1.5rem;
-  font-size: 0.7rem;
-  color: #94a3b8;
-  letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #334155;
   pointer-events: none;
 }
 
 s-slide[theme="dark"] .sd-header {
-  color: #64748b;
+  color: #cbd5e1;
+}
+
+/* Extra top padding when header is present to avoid content overlap */
+s-slide[header]:not([layout="title"]):not([layout="section"]) {
+  padding-top: 4rem;
 }
 
 /* --- Footer Bar --- */
 
-/* Left footer: page number | section name */
+/* Left footer: page number */
 s-slide::before {
+  content: attr(data-page) ' / ' attr(data-total);
   position: absolute;
   bottom: 1.25rem;
   left: 1.5rem;
@@ -89,14 +95,6 @@ s-slide::before {
   color: #94a3b8;
   letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
-}
-
-s-slide[section]::before {
-  content: attr(data-page) '  |  ' attr(section);
-}
-
-s-slide:not([section])::before {
-  content: attr(data-page) ' / ' attr(data-total);
 }
 
 /* Right footer: copyright */

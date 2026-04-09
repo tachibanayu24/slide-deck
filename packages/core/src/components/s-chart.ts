@@ -56,13 +56,22 @@ function isFiniteNumber(v: unknown): v is number {
   return typeof v === 'number' && isFinite(v);
 }
 
+/** Estimate text width in pixels. CJK characters are ~1em wide; Latin ~0.6em. */
+function estimateTextWidth(s: string, fontSize: number): number {
+  let width = 0;
+  for (const ch of s) {
+    width += /[\u3000-\u9fff\uf900-\ufaff]/.test(ch) ? fontSize : fontSize * 0.6;
+  }
+  return width;
+}
+
 // --- Component ---
 
 export class SChart extends HTMLElement {
   private initialized = false;
 
   static get observedAttributes() {
-    return ['type', 'data', 'colors', 'series', 'label', 'x-label', 'y-label'];
+    return ['type', 'data', 'colors', 'series', 'label', 'x-label', 'y-label', 'label-width'];
   }
 
   connectedCallback() {
@@ -258,7 +267,30 @@ export class SChart extends HTMLElement {
     const colors = this.getColors();
     const maxVal = safeMax(Math.max(...data.map((d) => d.value)));
 
-    const m: Margin = { top: 8, right: 56, bottom: 8, left: 72 };
+    // Dynamic left margin based on label content
+    const labelFontSize = 11;
+    const labelPadding = 8;
+    const labelWidthAttr = this.getAttribute('label-width');
+    let maxLabelWidth: number;
+    let truncLen: number;
+
+    if (labelWidthAttr) {
+      maxLabelWidth = parseInt(labelWidthAttr, 10);
+      truncLen = Math.floor(maxLabelWidth / labelFontSize);
+    } else {
+      const maxRawWidth = Math.max(...data.map((d) => estimateTextWidth(d.label, labelFontSize)));
+      maxLabelWidth = Math.min(160, Math.max(64, Math.ceil(maxRawWidth)));
+      truncLen = data.reduce((min, d) => {
+        let len = d.label.length;
+        while (len > 3 && estimateTextWidth(d.label.slice(0, len), labelFontSize) > maxLabelWidth) {
+          len--;
+        }
+        return Math.min(min, len);
+      }, 30);
+      truncLen = Math.max(truncLen, 3);
+    }
+
+    const m: Margin = { top: 8, right: 56, bottom: 8, left: maxLabelWidth + labelPadding };
     // Scale bar height up when few data points to avoid empty space
     const barH = data.length <= 3 ? 40 : data.length <= 5 ? 32 : 24;
     const gap = data.length <= 3 ? 16 : 10;
@@ -283,9 +315,9 @@ export class SChart extends HTMLElement {
       const color = colors[i % colors.length];
 
       parts.push(
-        `<text x="${m.left - 8}" y="${y + barH / 2 + 4}" text-anchor="end" font-size="11" fill="${this.textColor}">${esc(truncate(d.label, 8))}</text>`,
+        `<text x="${m.left - 8}" y="${y + barH / 2 + 4}" text-anchor="end" font-size="${labelFontSize}" fill="${this.textColor}">${esc(truncate(d.label, truncLen))}</text>`,
         `<rect x="${m.left}" y="${y}" width="${w}" height="${barH}" rx="4" fill="${color}" opacity="${FILL_OPACITY}"/>`,
-        `<text x="${m.left + w + 8}" y="${y + barH / 2 + 4}" font-size="11" font-weight="700" fill="${this.textColor}">${d.value}</text>`,
+        `<text x="${m.left + w + 8}" y="${y + barH / 2 + 4}" font-size="${labelFontSize}" font-weight="700" fill="${this.textColor}">${d.value}</text>`,
       );
     });
 

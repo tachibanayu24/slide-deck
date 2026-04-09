@@ -113,7 +113,7 @@
 ## パターン6: セクション区切り（ライト）
 
 ```html
-<s-slide layout="section" section="Introduction">
+<s-slide layout="section">
   <p class="text-sm text-blue-600 font-semibold tracking-wider uppercase">Chapter 1</p>
   <h2 class="text-4xl font-black text-slate-800 mt-2">はじめに</h2>
   <p class="text-lg text-slate-400 mt-3">セクションの概要</p>
@@ -133,7 +133,7 @@
 ## パターン8: 目次（toc）
 
 ```html
-<s-slide layout="toc" section="Contents">
+<s-slide layout="toc">
   <div>
     <p class="text-sm text-blue-600 font-semibold tracking-wider uppercase">Agenda</p>
     <h2 class="text-3xl font-black mt-1">目次</h2>
@@ -169,14 +169,14 @@ copyright + section を活用した、プロフェッショナルな構成例。
     <p class="text-xl text-slate-400 mt-4">サブタイトル</p>
   </s-slide>
 
-  <!-- 目次: section 属性でフッターにセクション名 -->
-  <s-slide layout="toc" section="Contents">
+  <!-- 目次 -->
+  <s-slide layout="toc">
     ...
   </s-slide>
 
-  <!-- 本文: セクション名がフッター左に表示される -->
-  <s-slide layout="text" section="Background">
-    <h2 class="text-3xl font-bold mb-6">見出し</h2>
+  <!-- 本文: header でスライドタイトル表示 -->
+  <s-slide layout="text" header="見出し">
+    <p>本文テキスト</p>
     ...
   </s-slide>
 
@@ -190,7 +190,7 @@ copyright + section を活用した、プロフェッショナルな構成例。
 ## パターン10: 引用・ハイライト
 
 ```html
-<s-slide layout="text" section="Insights">
+<s-slide layout="text" header="キーメッセージ">
   <h2 class="text-2xl font-bold mb-6">キーメッセージ</h2>
   <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-5 mb-4">
     <p class="text-blue-900 text-lg font-medium m-0">強調したいメッセージをここに。</p>
@@ -204,7 +204,7 @@ copyright + section を活用した、プロフェッショナルな構成例。
 SWOT分析、比較表、分類に最適。
 
 ```html
-<s-slide layout="grid-2x2" section="Analysis">
+<s-slide layout="grid-2x2" header="Analysis">
   <div class="bg-blue-50 rounded-lg p-5">
     <h3 class="text-lg font-bold text-blue-800 mb-2">Strengths</h3>
     <ul class="text-sm text-slate-600 space-y-1">
@@ -238,7 +238,7 @@ SWOT分析、比較表、分類に最適。
 左に要約テキスト、右に `<s-chart>` コンポーネント。
 
 ```html
-<s-slide layout="chart" section="Data">
+<s-slide layout="chart" header="Data">
   <div>
     <h2 class="text-2xl font-bold mb-3">売上推移</h2>
     <p class="text-sm text-slate-500 mb-4">前年比120%の成長</p>
@@ -255,7 +255,7 @@ SWOT分析、比較表、分類に最適。
 
 ```html
 <!-- ドーナツ: text-image レイアウトで -->
-<s-slide layout="text-image" section="Market">
+<s-slide layout="text-image" header="Market">
   <div data-area="text">
     <h2 class="text-2xl font-bold mb-4">市場シェア</h2>
     <p class="text-slate-500">当社は業界2位。成長率はトップ。</p>
@@ -266,7 +266,7 @@ SWOT分析、比較表、分類に最適。
 </s-slide>
 
 <!-- 横棒: 比較やランキングに -->
-<s-slide layout="text-image" section="Tech">
+<s-slide layout="text-image" header="Tech">
   <div data-area="text">
     <h2 class="text-2xl font-bold mb-4">技術スタック人気度</h2>
     <p class="text-slate-500">2026年開発者調査より</p>
@@ -281,7 +281,7 @@ SWOT分析、比較表、分類に最適。
 
 ```html
 <!-- 折れ線グラフ（複数系列）: トレンド比較に -->
-<s-slide layout="chart" section="Growth">
+<s-slide layout="chart" header="Growth">
   <div>
     <h2 class="text-2xl font-bold mb-3">売上 vs 利益</h2>
     <p class="text-sm text-slate-500 mb-4">4年間の推移</p>
@@ -294,7 +294,7 @@ SWOT分析、比較表、分類に最適。
 </s-slide>
 
 <!-- 散布図: ポジショニング・相関分析に -->
-<s-slide layout="text-image" section="Analysis">
+<s-slide layout="text-image" header="Analysis">
   <div data-area="text">
     <h2 class="text-2xl font-bold mb-4">電池技術マップ</h2>
     <p class="text-slate-500">エネルギー密度 vs サイクル寿命で各技術をプロット</p>
@@ -310,7 +310,7 @@ SWOT分析、比較表、分類に最適。
 スクリーンショットや大きな図解を全面表示。
 
 ```html
-<s-slide layout="full-image" section="Demo">
+<s-slide layout="full-image" header="Demo">
   <img src="screenshot.png" alt="デモ画面" class="rounded-lg shadow-lg">
 </s-slide>
 ```
@@ -320,7 +320,7 @@ SWOT分析、比較表、分類に最適。
 大きな数値で視覚的インパクトを出す。カードのグリッドで並べる。
 
 ```html
-<s-slide layout="text" section="Results">
+<s-slide layout="text" header="主要指標">
   <h2 class="text-2xl font-bold mb-6">主要指標</h2>
   <div class="grid grid-cols-3 gap-6">
     <div class="text-center">
@@ -347,7 +347,7 @@ SWOT分析、比較表、分類に最適。
 時系列のイベントやロードマップに。左ボーダーのラインで接続感を出す。
 
 ```html
-<s-slide layout="text" section="Roadmap">
+<s-slide layout="text" header="ロードマップ">
   <h2 class="text-2xl font-bold mb-6">ロードマップ</h2>
   <div class="space-y-4 border-l-2 border-blue-200 pl-6 ml-2">
     <div class="relative">
@@ -398,7 +398,7 @@ SWOT分析、比較表、分類に最適。
 text レイアウト内で Tailwind の grid + Lucide アイコンでカードを並べる。
 
 ```html
-<s-slide layout="text" section="Features">
+<s-slide layout="text" header="特徴">
   <h2 class="text-2xl font-bold mb-6">特徴</h2>
   <div class="grid grid-cols-2 gap-4">
     <div class="bg-slate-50 rounded-xl p-5">

@@ -48,7 +48,7 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 ### `<s-deck>`
 
 スライド全体のコンテナ。自動で以下を提供：
-- フッターバー（左: ページ番号+セクション名、右: コピーライト）
+- フッターバー（左: ページ番号/総数、右: コピーライト）
 - ツールバー（画面下部: ナビゲーション、プレゼンモード、PDF出力）
 - キーボードナビゲーション（プレゼンモード時: ← → Space Esc）
 
@@ -71,12 +71,10 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `layout` | 推奨 | レイアウトプリセット。省略時は `text` |
 | `theme` | 任意 | `dark` を指定するとテキスト色を明色に自動切替 |
 | `bg` | 任意 | 背景。CSSの `background` に渡す値 |
-| `section` | 任意 | フッター左側に表示するセクション名（例: `section="Introduction"`） |
-| `header` | 任意 | スライド上部に表示するタイトル。`title`/`section` レイアウトでは非表示 |
+| `header` | 任意 | スライド上部に太字で表示するタイトル（1.1rem, 700）。`title`/`section` レイアウトでは非表示 |
 
 フッターの表示ルール：
-- `section` 属性あり → 左フッターに `ページ番号 | セクション名`
-- `section` 属性なし → 左フッターに `ページ番号 / 総数`
+- 左フッターに `ページ番号 / 総数`
 - `layout="title"` → フッター非表示（表紙・裏表紙用）
 
 ### `data-area` 属性（子要素）
@@ -101,6 +99,7 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `series` | 任意 | line multi-series用。JSON配列 `'["売上","利益"]'` |
 | `x-label` | 任意 | scatter用。X軸ラベル |
 | `y-label` | 任意 | scatter用。Y軸ラベル |
+| `label-width` | 任意 | bar-horizontal用。ラベル表示幅をpxで指定（省略時は自動計算） |
 
 ダーク背景の `<s-slide>` 内では自動でテキスト色を明色に切替。
 
@@ -112,6 +111,22 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | line（単一系列） | `[{"label":"Q1","value":120}]` |
 | line（複数系列） | `[{"label":"Q1","values":[120,80]}]` + `series='["A","B"]'` |
 | scatter | `[{"label":"名前","x":数値,"y":数値,"group":"グループ名"}]` |
+
+#### bar-horizontal ラベルの注意
+
+横棒グラフのラベルはチャート左側に表示され、ラベル長に応じて左マージンが自動調整されます。
+
+- **推奨ラベル長**: 半角8文字 / 全角4文字以内が最適
+- **最大表示幅**: 約160px（全角で約14文字、半角で約24文字）
+- 超過分は省略記号（...）で切り詰められます
+- 日本語ラベルが長い場合は略称を使うか、`label-width` 属性で明示的に幅を指定してください
+
+```html
+<!-- label-width で左マージンを広げる例 -->
+<s-chart type="bar-horizontal" label-width="120"
+  data='[{"label":"カスタマーサクセス","value":85},{"label":"プロダクト開発","value":62}]'>
+</s-chart>
+```
 
 #### 使用例
 
