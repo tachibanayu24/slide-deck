@@ -68,7 +68,7 @@ s-slide {
   top: 1.25rem;
   left: 1.5rem;
   right: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #334155;
   pointer-events: none;
@@ -80,7 +80,7 @@ s-slide[theme="dark"] .sd-header {
 
 /* Extra top padding when header is present to avoid content overlap */
 s-slide[header]:not([layout="title"]):not([layout="section"]) {
-  padding-top: 4rem;
+  padding-top: 4.5rem;
 }
 
 /* --- Footer Bar --- */
@@ -294,7 +294,9 @@ s-slide pre code {
 
 /* --- s-chart --- */
 s-chart {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
 }
