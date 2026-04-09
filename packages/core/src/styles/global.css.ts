@@ -170,6 +170,7 @@ s-slide[layout="text"] {
 s-slide[layout="text-image"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
   gap: 2rem;
   align-items: center;
 }
@@ -178,6 +179,7 @@ s-slide[layout="text-image"] {
 s-slide[layout="image-text"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
   gap: 2rem;
   align-items: center;
 }
@@ -186,8 +188,9 @@ s-slide[layout="image-text"] {
 s-slide[layout="two-column"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
   gap: 2rem;
-  align-items: start;
+  align-items: center;
 }
 
 /* 2x2 Grid */
@@ -216,6 +219,7 @@ s-slide[layout="full-image"] svg {
 s-slide[layout="chart"] {
   display: grid;
   grid-template-columns: 2fr 3fr;
+  grid-template-rows: auto 1fr;
   gap: 2rem;
   align-items: center;
 }
