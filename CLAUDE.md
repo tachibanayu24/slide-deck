@@ -94,4 +94,6 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
 <s-chart type="bar" data='[{"label":"Q1","value":120},{"label":"Q2","value":180}]'></s-chart>
 <s-chart type="line" series='["売上","利益"]' data='[{"label":"2022","values":[100,40]},{"label":"2023","values":[150,60]}]'></s-chart>
 <s-chart type="scatter" x-label="X軸" y-label="Y軸" data='[{"label":"A","x":10,"y":20,"group":"G1"}]'></s-chart>
+<!-- height属性で描画領域高さを調整（デフォルト200、小さいほど横長） -->
+<s-chart type="line" height="80" data='[{"label":"Q1","value":120},{"label":"Q2","value":180}]'></s-chart>
 ```

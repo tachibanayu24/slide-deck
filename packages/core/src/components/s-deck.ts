@@ -293,6 +293,7 @@ export class SDeck extends HTMLElement {
       pdfBtn.style.opacity = this.isGridView ? '0.3' : '';
       pdfBtn.style.pointerEvents = this.isGridView ? 'none' : '';
     }
+
   }
 
   private setupKeyboard() {

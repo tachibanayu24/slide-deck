@@ -50,6 +50,7 @@ s-slide {
   padding: 3rem;
   box-sizing: border-box;
   position: relative;
+  isolation: isolate;
   background: #ffffff;
   color: #0f172a;
   overflow: hidden;
@@ -154,6 +155,14 @@ s-slide[layout="title"]::after,
 s-slide[layout="section"]::before,
 s-slide[layout="section"]::after {
   content: none;
+}
+
+/* --- Background Overlay --- */
+s-slide > .sd-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* --- Theme: Dark --- */

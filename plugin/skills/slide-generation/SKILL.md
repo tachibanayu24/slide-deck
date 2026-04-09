@@ -75,6 +75,7 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `message` | 任意 | header 下にキーメッセージバーとして表示（青背景+左ボーダー）。スライドの要点を1-2行で。`title`/`section` レイアウトでは非表示 |
 | `source` | 任意 | 右下に小さく表示する出典テキスト。`title`/`section` レイアウトでは非表示 |
 | `bg-image` | 任意 | `layout="accent-image"` 用。右側アクセント帯に表示する画像パス |
+| `bg-overlay` | 任意 | 背景画像の上に重ねる半透明オーバーレイ。CSS `background` 値を指定。`bg` で画像を設定し、`bg-overlay` でダーク半透明グラデーションを重ねることで文字の可読性を確保する |
 
 フッターの表示ルール：
 - 左フッターに `ページ番号 / 総数`
@@ -146,6 +147,7 @@ Before/After 比較図。左右2カラム + 中央矢印。
 | `x-label` | 任意 | scatter用。X軸ラベル |
 | `y-label` | 任意 | scatter用。Y軸ラベル |
 | `label-width` | 任意 | bar-horizontal用。ラベル表示幅をpxで指定（省略時は自動計算） |
+| `height` | 任意 | チャート描画領域の高さ（viewBox内のプロット高さ）。省略時は200。小さい値（80〜120）を指定すると横長のコンパクトなチャートになる。スライド内でスペースが限られるときに使用 |
 
 ダーク背景の `<s-slide>` 内では自動でテキスト色を明色に切替。
 
@@ -202,11 +204,22 @@ Before/After 比較図。左右2カラム + 中央矢印。
 - `theme="dark"` + グラデーション背景との組み合わせが映える
 
 ```html
+<!-- グラデーションのみ -->
 <s-slide layout="title" theme="dark" bg="linear-gradient(135deg, #0f172a, #1e3a5f)">
   <h1 class="text-5xl font-black text-white">タイトル</h1>
   <p class="text-xl text-slate-400 mt-4">サブタイトル</p>
 </s-slide>
+
+<!-- 全面背景画像 + bg-overlay（推奨） -->
+<s-slide layout="title" theme="dark"
+  bg="url('.images/cover-bg.png') center/cover no-repeat"
+  bg-overlay="linear-gradient(rgba(15,23,42,0.72), rgba(30,58,95,0.65))">
+  <h1 class="text-5xl font-black text-white">タイトル</h1>
+  <p class="text-xl text-slate-300 mt-4">サブタイトル</p>
+</s-slide>
 ```
+
+**全面背景画像パターン**: Gemini で `--scene --width 800` のシーン画像を生成し、`bg` に画像URL、`bg-overlay` にダーク半透明グラデーションを指定。フレームワークが自動で画像とコンテンツの間にオーバーレイを挿入する。表紙・裏表紙の両方で使用する。
 
 ### `text` — テキスト主体
 - 用途: 箇条書き、説明、手順
@@ -459,7 +472,13 @@ bg="linear-gradient(135deg, #dc2626 0%, #ea580c 100%)"          /* Red → Orang
 /* ソフト系（ライト背景のアクセント） */
 bg="linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)"          /* Blue-50 → Violet-50 */
 bg="linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%)"          /* Emerald-50 → Teal-50 */
+
+/* 全面背景画像 + bg-overlay 属性（表紙・裏表紙推奨） */
+bg="url('.images/cover.png') center/cover no-repeat"
+bg-overlay="linear-gradient(rgba(15,23,42,0.72), rgba(30,58,95,0.65))"
 ```
+
+**全面背景画像のコツ**: `bg` に画像URL、`bg-overlay` にダーク半透明グラデーションを指定。フレームワークが画像とコンテンツの間にオーバーレイを自動挿入する。opacity 0.65〜0.75 が白文字の可読性とインパクトのバランスが良い。Gemini画像は `--scene --width 800` で横長のシーン写真を生成する。
 
 ### ダーク背景スライド
 
