@@ -83,6 +83,29 @@ s-slide[header]:not([layout="title"]):not([layout="section"]) {
   padding-top: 4.5rem;
 }
 
+/* Even more when message is also present */
+s-slide[header][message]:not([layout="title"]):not([layout="section"]) {
+  padding-top: 4.5rem;
+}
+
+/* --- Message Bar --- */
+.sd-message {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #334155;
+}
+
+s-slide[theme="dark"] .sd-message {
+  background: rgba(59, 130, 246, 0.12);
+  border-left-color: #60a5fa;
+  color: #cbd5e1;
+}
+
 /* --- Footer Bar --- */
 
 /* Left footer: page number */

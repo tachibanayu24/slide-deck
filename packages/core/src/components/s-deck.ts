@@ -133,6 +133,7 @@ export class SDeck extends HTMLElement {
     const ready = () => {
       this.setupPageNumbers();
       this.setupHeaders();
+      this.setupMessages();
       this.createToolbar();
       this.setupKeyboard();
       this.setupScrollObserver();
@@ -191,6 +192,21 @@ export class SDeck extends HTMLElement {
       el.className = 'sd-header';
       el.textContent = header;
       slide.appendChild(el);
+    });
+  }
+
+  private setupMessages() {
+    const hiddenLayouts = ['title', 'section'];
+    this.slides.forEach((slide) => {
+      const message = slide.getAttribute('message');
+      const layout = slide.getAttribute('layout') || '';
+      if (!message || hiddenLayouts.includes(layout)) return;
+      if (slide.querySelector('.sd-message')) return;
+      const el = document.createElement('div');
+      el.className = 'sd-message';
+      el.textContent = message;
+      // Insert as first child so it appears at the top of content flow
+      slide.prepend(el);
     });
   }
 

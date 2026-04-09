@@ -71,7 +71,8 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `layout` | 推奨 | レイアウトプリセット。省略時は `text` |
 | `theme` | 任意 | `dark` を指定するとテキスト色を明色に自動切替 |
 | `bg` | 任意 | 背景。CSSの `background` に渡す値 |
-| `header` | 任意 | スライド上部に太字で表示するタイトル（1.1rem, 700）。`title`/`section` レイアウトでは非表示 |
+| `header` | 任意 | スライド上部に太字で表示するタイトル（1.5rem, 700）。`title`/`section` レイアウトでは非表示 |
+| `message` | 任意 | header 下にキーメッセージバーとして表示（青背景+左ボーダー）。スライドの要点を1-2行で。`title`/`section` レイアウトでは非表示 |
 
 フッターの表示ルール：
 - 左フッターに `ページ番号 / 総数`

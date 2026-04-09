@@ -66,8 +66,8 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
     <s-slide layout="title" theme="dark" bg="...">
       <!-- 表紙: フッター非表示 -->
     </s-slide>
-    <s-slide layout="text" header="スライドタイトル">
-      <!-- 本文: 上部にheader（太字1.1rem）、左フッターにページ番号 -->
+    <s-slide layout="text" header="スライドタイトル" message="このスライドの要点を1-2行で記載">
+      <!-- 本文: 上部にheader（太字1.5rem）、その下にmessageバー、左フッターにページ番号 -->
     </s-slide>
   </s-deck>
   <script>lucide.createIcons();</script>
