@@ -58,7 +58,7 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
       theme: { extend: { fontFamily: { sans: ['"Noto Sans JP"', 'system-ui', 'sans-serif'] } } }
     }
   </script>
-  <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/@tachibanayu24/slide-deck@latest/dist/slide-deck.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>

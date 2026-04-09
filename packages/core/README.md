@@ -10,7 +10,7 @@ Web Components framework for HTML slide decks — LLM-friendly, PDF-ready.
 <head>
   <meta charset="UTF-8">
   <script src="https://cdn.tailwindcss.com/"></script>
-  <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/@tachibanayu24/slide-deck@latest/dist/slide-deck.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>

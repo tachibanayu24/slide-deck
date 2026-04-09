@@ -74,7 +74,7 @@ claude
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Slides</title>
   <script src="https://cdn.tailwindcss.com/"></script>
-  <script src="https://unpkg.com/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/@tachibanayu24/slide-deck@latest/dist/slide-deck.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>

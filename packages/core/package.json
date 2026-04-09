@@ -1,5 +1,5 @@
 {
-  "name": "slide-deck",
+  "name": "@tachibanayu24/slide-deck",
   "version": "0.1.0",
   "description": "Web Components framework for HTML slide decks — LLM-friendly, PDF-ready",
   "type": "module",
