@@ -77,7 +77,14 @@ esbuild で `src/index.ts` → `dist/slide-deck.js` (IIFE, minified)。`file://`
 
 ### レイアウト一覧
 
-`title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc`
+`title`, `text`, `text-image`, `image-text`, `two-column`, `grid-2x2`, `full-image`, `chart`, `section`, `toc`, `accent-image`
+
+### コンポーネント一覧
+
+- `<s-chart>` — データ可視化（bar, bar-horizontal, donut, line, scatter）
+- `<s-flow>` — プロセスフロー（シェブロン矢印）
+- `<s-kpi>` — KPI指標カード
+- `<s-compare>` — Before/After比較
 
 ### `<s-chart>` コンポーネント
 

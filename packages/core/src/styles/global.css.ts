@@ -107,6 +107,22 @@ s-slide[theme="dark"] .sd-message {
   color: #cbd5e1;
 }
 
+/* --- Source Attribution --- */
+.sd-source {
+  position: absolute;
+  bottom: 2.25rem;
+  right: 1.5rem;
+  font-size: 0.55rem;
+  color: #94a3b8;
+  max-width: 60%;
+  text-align: right;
+  pointer-events: none;
+}
+
+s-slide[theme="dark"] .sd-source {
+  color: #64748b;
+}
+
 /* --- Footer Bar --- */
 
 /* Left footer: page number */
@@ -241,6 +257,30 @@ s-slide[layout="section"]:not([theme="dark"])::before {
   background: #2563eb;
 }
 
+/* Accent Image — right visual strip */
+s-slide[layout="accent-image"] {
+  display: flex;
+  flex-direction: column;
+  padding-right: 89mm;
+}
+
+s-slide[layout="accent-image"] .sd-accent-image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 89mm;
+  height: 167mm;
+  clip-path: ellipse(95% 90% at 105% 50%);
+  overflow: hidden;
+}
+
+s-slide[layout="accent-image"] .sd-accent-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* TOC — left label + right content */
 s-slide[layout="toc"] {
   display: grid;
@@ -265,9 +305,12 @@ s-slide table {
 s-slide th {
   text-align: left;
   font-weight: 600;
-  color: #64748b;
   padding: 0.5rem 0.75rem;
   border-bottom: 2px solid #e2e8f0;
+}
+
+s-slide thead th {
+  color: inherit;
 }
 
 s-slide td {

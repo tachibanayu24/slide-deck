@@ -24,6 +24,10 @@ function parseArgs(argv) {
       case '--no-transparent':
         args.transparent = false;
         break;
+      case '--scene':
+        args.scene = true;
+        args.transparent = false;
+        break;
       default:
         console.error(`Unknown option: ${argv[i]}`);
         process.exit(1);
@@ -151,7 +155,11 @@ const DEFAULT_STYLE =
   'The object looks tactile and touchable, like a cute plastic toy or candy. ' +
   'Soft studio lighting with gentle reflections on the surface. Kawaii, minimal, charming style.';
 
-function buildPrompt(description, style) {
+function buildPrompt(description, style, scene) {
+  if (scene) {
+    const s = style || 'Cinematic professional photography. Rich colors, deep contrast.';
+    return `${s} Scene: ${description}. Fill the entire frame with the scene. No empty space, no borders.`;
+  }
   const s = style || DEFAULT_STYLE;
   return (
     `${s} The object is: ${description}. ` +
@@ -217,7 +225,7 @@ async function removeWhiteBackground(buffer) {
 // --- Main ---
 
 (async () => {
-  const fullPrompt = buildPrompt(args.prompt, args.style);
+  const fullPrompt = buildPrompt(args.prompt, args.style, args.scene);
   const outPath = path.resolve(args.output);
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>低炭素設備導入支援 調査報告書</title>
+  <script src="https://cdn.tailwindcss.com/"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['"Noto Sans JP"', 'system-ui', 'sans-serif'] } } }
+    }
+  </script>
+  <script src="https://unpkg.com/@tachibanayu24/slide-deck@latest/dist/slide-deck.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <s-deck copyright="©Acme Consulting">
+
+    <!-- Slide 1: 制度概要 accent-image レイアウト -->
+    <s-slide layout="accent-image" bg-image=".images/green-factory-accent.png" header="低炭素設備リース信用保険制度の概要" message="中小企業の低炭素設備導入を促進するため、リース保険料の50%を国が補助する制度。" source="出典: 経済産業省「低炭素設備リース信用保険制度の手引き」（令和6年改訂版）">
+
+      <div class="flex gap-4 mb-2">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-800 mb-1">保険料の計算方法と補助率</p>
+          <table class="w-full text-xs mb-3">
+            <thead><tr class="bg-slate-800 text-white"><th class="px-3 py-1.5">リース期間</th><th class="px-3 py-1.5">保険料率</th><th class="px-3 py-1.5">補助率</th></tr></thead>
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5">5年以下</td><td class="px-3 py-1.5">0.15〜0.30%</td><td class="px-3 py-1.5 font-bold text-emerald-700">50%</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5">5〜7年</td><td class="px-3 py-1.5">0.20〜0.45%</td><td class="px-3 py-1.5 font-bold text-emerald-700">50%</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5">7〜10年</td><td class="px-3 py-1.5">0.25〜0.55%</td><td class="px-3 py-1.5 font-bold text-emerald-700">50%</td></tr>
+              <tr><td class="px-3 py-1.5">10年超</td><td class="px-3 py-1.5">個別審査</td><td class="px-3 py-1.5 font-bold text-emerald-700">50%</td></tr>
+            </tbody>
+          </table>
+
+          <p class="text-xs font-bold text-slate-800 mb-1">対象設備の要件</p>
+          <table class="w-full text-xs">
+            <thead><tr class="bg-slate-800 text-white"><th class="px-3 py-1.5">項目</th><th class="px-3 py-1.5">基準</th></tr></thead>
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5 font-semibold">CO2削減率</td><td class="px-3 py-1.5">従来比 <strong>30%以上</strong></td></tr>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5 font-semibold">設備取得額</td><td class="px-3 py-1.5">100万円以上</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-3 py-1.5 font-semibold">対象業種</td><td class="px-3 py-1.5">製造業、運輸業、建設業等</td></tr>
+              <tr><td class="px-3 py-1.5 font-semibold">申請主体</td><td class="px-3 py-1.5">中小企業基本法上の中小企業</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="text-xs font-bold text-slate-800 mb-1">申請〜適用の流れ</p>
+      <s-flow data='[{"label":"事前相談","sub":"経産省窓口"},{"label":"申請書提出","sub":"必要書類一式"},{"label":"審査・認定","sub":"約2ヶ月"},{"label":"リース契約","sub":"事業者と締結"},{"label":"保険料補助","sub":"50%を国負担"}]' colors="#334155,#475569,#64748b,#334155,#10b981"></s-flow>
+
+    </s-slide>
+
+    <!-- Slide 2: 調査結果KPI + テーブル + 優先度フロー -->
+    <s-slide layout="text" header="調査結果のサマリ" message="4つの課題領域を評価。IoT活用の遅延が最も深刻であり、財政支援の拡充が急務。人材確保は短期施策で改善可能。" source="出典: 経済産業省「産業保安に関する実態調査」（令和5年度）">
+
+      <s-kpi data='[{"label":"課題領域","value":"4分野","trend":"neutral"},{"label":"最重要課題","value":"IoT活用","change":"導入格差55pt","trend":"down"},{"label":"改善分野","value":"法令遵守","change":"重大事故▲12%","trend":"up"},{"label":"完了率目標","value":"50%","change":"現状29%","trend":"neutral"}]'></s-kpi>
+
+      <table class="w-full text-xs my-3">
+        <thead><tr class="bg-slate-800 text-white"><th class="px-3 py-2 text-left">課題領域</th><th class="px-3 py-2 text-left">現状評価</th><th class="px-3 py-2 text-center w-14">進捗</th><th class="px-3 py-2 text-left">推奨施策</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-200">
+            <td class="px-3 py-2 font-bold"><i data-lucide="users" class="w-3 h-3 inline text-slate-400 mr-1"></i>人材確保</td>
+            <td class="px-3 py-2 text-slate-600">高齢化率42%。5年以内に15%が退職見込み</td>
+            <td class="px-3 py-2 text-center"><span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[10px] font-bold">要改善</span></td>
+            <td class="px-3 py-2 text-slate-600">資格手当拡充、研修体制</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="px-3 py-2 font-bold"><i data-lucide="wifi" class="w-3 h-3 inline text-slate-400 mr-1"></i>IoT活用</td>
+            <td class="px-3 py-2 text-slate-600">導入率: 大企業78%、中小23%。格差拡大</td>
+            <td class="px-3 py-2 text-center"><span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded text-[10px] font-bold">遅延</span></td>
+            <td class="px-3 py-2 text-slate-600">補助金拡充、共同利用</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="px-3 py-2 font-bold"><i data-lucide="globe" class="w-3 h-3 inline text-slate-400 mr-1"></i>多元化</td>
+            <td class="px-3 py-2 text-slate-600">女性技術者4.2%。外国人材129名(+38%)</td>
+            <td class="px-3 py-2 text-center"><span class="bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded text-[10px] font-bold">進行中</span></td>
+            <td class="px-3 py-2 text-slate-600">多言語教材、資格相互認証</td>
+          </tr>
+          <tr>
+            <td class="px-3 py-2 font-bold"><i data-lucide="shield" class="w-3 h-3 inline text-slate-400 mr-1"></i>法令遵守</td>
+            <td class="px-3 py-2 text-slate-600">重大事故▲12%。軽微な違反+8%</td>
+            <td class="px-3 py-2 text-center"><span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">順調</span></td>
+            <td class="px-3 py-2 text-slate-600">eラーニング義務化</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="text-xs font-bold text-slate-800 mb-1">対応優先度</p>
+      <s-flow data='[{"label":"IoT投資支援","sub":"最優先","color":"#dc2626"},{"label":"人材確保","sub":"短期(1年)","color":"#f59e0b"},{"label":"多元化推進","sub":"中期(3年)","color":"#3b82f6"},{"label":"法令遵守","sub":"継続","color":"#10b981"}]'></s-flow>
+
+    </s-slide>
+
+    <!-- Slide 3: IoT導入 accent-image + KPI + チャート -->
+    <s-slide layout="accent-image" bg-image=".images/iot-accent.png" header="IoT遠隔監視の導入状況" message="大企業と中小企業の導入率格差は55pt。初期費用の高さが最大の障壁であり、補助金制度の拡充が急務。" source="出典: 高圧ガス保安協会「IoT導入実態調査」（2024年）">
+
+      <s-kpi data='[{"label":"大企業 導入率","value":"78%","trend":"up"},{"label":"中小企業 導入率","value":"23%","change":"前年比+6pt","trend":"up"},{"label":"導入率格差","value":"55pt","change":"+3pt拡大","trend":"down"}]'></s-kpi>
+
+      <div class="flex gap-3 my-3">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-800 mb-1">中小企業のIoT導入率推移（%）</p>
+          <s-chart type="bar" data='[{"label":"2021","value":8},{"label":"2022","value":12},{"label":"2023","value":17},{"label":"2024","value":23}]'></s-chart>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-800 mb-1">導入障壁（複数回答%）</p>
+          <s-chart type="bar-horizontal" data='[{"label":"初期費用","value":72},{"label":"人材不足","value":58},{"label":"効果不明","value":41},{"label":"安全不安","value":29}]'></s-chart>
+        </div>
+      </div>
+
+    </s-slide>
+
+    <!-- Slide 4: IoT障壁 Before/After -->
+    <s-slide layout="text" header="IoT導入の障壁と対策の方向性" message="初期費用72%、人材不足58%が二大障壁。共同利用モデルとベンダー常駐型サポートで解消を図る。" source="出典: 高圧ガス保安協会「IoT導入実態調査」（2024年）/ n=342社">
+
+      <s-compare
+        before-label="現状の障壁"
+        after-label="推奨対策"
+        before='[{"text":"初期費用が高い（72%）","detail":"平均2,400万円の投資回収見通しが立たない"},{"text":"運用人材がいない（58%）","detail":"導入しても使いこなせる社員がいない"},{"text":"効果が不明確（41%）","detail":"同規模・同業種の事例が少ない"},{"text":"セキュリティ不安（29%）","detail":"外部接続によるサイバー攻撃リスク"}]'
+        after='[{"text":"リース制度＋補助金拡充","detail":"補助上限500万→1,000万円に引き上げ"},{"text":"ベンダー常駐型サポート","detail":"公的研修プログラムと併用"},{"text":"業種別ベストプラクティス集","detail":"導入企業見学会の定期開催"},{"text":"セキュリティGL＋認証制度","detail":"第三者機関による認証で不安を解消"}]'>
+      </s-compare>
+
+      <p class="text-xs text-slate-600 mt-3 leading-relaxed">上記の障壁は相互に関連している。初期費用の高さが導入を阻み、導入事例が増えないため効果が不明確なままとなり、さらに新規導入が進まないという悪循環が生じている。この循環を断つには、まず公的補助による初期コスト低減で導入事例を創出し、成功事例の横展開で効果を可視化するアプローチが有効である。共同利用モデルは初期費用と人材不足を同時に解消する手段として、2024年度の実証事業で1社あたりコスト約60%削減の成果が出ている。</p>
+
+    </s-slide>
+
+    <!-- Slide 5: 協議会 レイヤー図 + テーブル -->
+    <s-slide layout="text" header="スマート保安官民協議会の体制と活動実績" message="産官学22名で年4回開催。アクションプラン全28項目中、完了率は前年度18%から29%に改善。" source="出典: 経産省「スマート保安官民協議会 令和4年度活動報告書」">
+
+      <div class="flex gap-5 flex-1 min-h-0">
+        <div class="w-[42%] shrink-0 flex flex-col">
+          <p class="text-xs font-bold text-slate-800 mb-1.5">協議会の構成（高圧ガス保安部会）</p>
+          <div class="space-y-1.5 mb-3">
+            <div class="flex rounded overflow-hidden border border-slate-200">
+              <div class="w-1.5 bg-violet-700 shrink-0"></div>
+              <div class="flex-1 bg-violet-50 px-3 py-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-violet-700"></i>座長</span>
+                <span class="text-xs text-slate-500">大学教授 1名</span>
+              </div>
+            </div>
+            <div class="flex rounded overflow-hidden border border-slate-200">
+              <div class="w-1.5 bg-sky-700 shrink-0"></div>
+              <div class="flex-1 bg-sky-50 px-3 py-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="landmark" class="w-3.5 h-3.5 text-sky-700"></i>行政</span>
+                <span class="text-xs text-slate-500">経産省・KHK 4名</span>
+              </div>
+            </div>
+            <div class="flex rounded overflow-hidden border border-slate-200">
+              <div class="w-1.5 bg-emerald-700 shrink-0"></div>
+              <div class="flex-1 bg-emerald-50 px-3 py-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="building-2" class="w-3.5 h-3.5 text-emerald-700"></i>事業者</span>
+                <span class="text-xs text-slate-500">業界団体 12名</span>
+              </div>
+            </div>
+            <div class="flex rounded overflow-hidden border border-slate-200">
+              <div class="w-1.5 bg-amber-600 shrink-0"></div>
+              <div class="flex-1 bg-amber-50 px-3 py-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="microscope" class="w-3.5 h-3.5 text-amber-700"></i>有識者</span>
+                <span class="text-xs text-slate-500">研究者等 5名</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs font-bold text-slate-800 mb-1">令和4年度の主要な成果</p>
+          <div class="space-y-1.5 mb-3">
+            <div class="flex items-start gap-1.5 text-xs"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0"></i><span class="text-slate-700">IoTセンサー導入ガイドライン策定完了</span></div>
+            <div class="flex items-start gap-1.5 text-xs"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0"></i><span class="text-slate-700">中小企業向け簡易リスクアセスメントツール公開</span></div>
+            <div class="flex items-start gap-1.5 text-xs"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0"></i><span class="text-slate-700">事故予兆検知パイロット事業: 検知率 <strong>78%</strong> 達成</span></div>
+          </div>
+
+          <p class="text-xs font-bold text-slate-800 mb-1">開催実績</p>
+          <table class="w-full text-xs">
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1 text-slate-500">開催頻度</td><td class="px-2 py-1 font-semibold">年4回（四半期）</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1 text-slate-500">構成員数</td><td class="px-2 py-1 font-semibold">22名（産官学）</td></tr>
+              <tr><td class="px-2 py-1 text-slate-500">設立年度</td><td class="px-2 py-1 font-semibold">令和3年度</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex-1 min-w-0 flex flex-col">
+          <p class="text-xs font-bold text-slate-800 mb-1.5">アクションプラン進捗（全28項目）</p>
+          <table class="w-full text-xs mb-3">
+            <thead><tr class="bg-slate-800 text-white"><th class="px-2 py-1.5 text-left">分野</th><th class="px-2 py-1.5 text-center">項目</th><th class="px-2 py-1.5 text-center">完了</th><th class="px-2 py-1.5 text-center">進行</th><th class="px-2 py-1.5 text-center">未着手</th></tr></thead>
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1.5">遠隔監視</td><td class="px-2 py-1.5 text-center">8</td><td class="px-2 py-1.5 text-center text-emerald-700 font-bold">5</td><td class="px-2 py-1.5 text-center">2</td><td class="px-2 py-1.5 text-center">1</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1.5">データ共有</td><td class="px-2 py-1.5 text-center">7</td><td class="px-2 py-1.5 text-center text-emerald-700 font-bold">1</td><td class="px-2 py-1.5 text-center">5</td><td class="px-2 py-1.5 text-center text-red-600">1</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1.5">AI活用</td><td class="px-2 py-1.5 text-center">6</td><td class="px-2 py-1.5 text-center text-emerald-700 font-bold">1</td><td class="px-2 py-1.5 text-center">3</td><td class="px-2 py-1.5 text-center text-red-600">2</td></tr>
+              <tr class="border-b border-slate-200"><td class="px-2 py-1.5">人材育成</td><td class="px-2 py-1.5 text-center">4</td><td class="px-2 py-1.5 text-center text-emerald-700 font-bold">1</td><td class="px-2 py-1.5 text-center">3</td><td class="px-2 py-1.5 text-center">0</td></tr>
+              <tr><td class="px-2 py-1.5">制度整備</td><td class="px-2 py-1.5 text-center">3</td><td class="px-2 py-1.5 text-center text-emerald-700 font-bold">0</td><td class="px-2 py-1.5 text-center">2</td><td class="px-2 py-1.5 text-center text-red-600">1</td></tr>
+            </tbody>
+            <tfoot><tr class="bg-slate-100 font-bold"><td class="px-2 py-1.5">合計</td><td class="px-2 py-1.5 text-center">28</td><td class="px-2 py-1.5 text-center text-emerald-700">8</td><td class="px-2 py-1.5 text-center">15</td><td class="px-2 py-1.5 text-center text-red-600">5</td></tr></tfoot>
+          </table>
+
+          <p class="text-xs font-bold text-slate-800 mb-1">次年度の対応フロー</p>
+          <s-flow data='[{"label":"データ基盤構築","color":"#3b82f6"},{"label":"AI実証加速","color":"#8b5cf6"},{"label":"中小デジタル化","color":"#10b981"}]'></s-flow>
+        </div>
+      </div>
+
+    </s-slide>
+
+  </s-deck>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

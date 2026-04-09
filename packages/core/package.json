@@ -1,6 +1,6 @@
 {
   "name": "@tachibanayu24/slide-deck",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Web Components framework for HTML slide decks — LLM-friendly, PDF-ready",
   "type": "module",
   "main": "dist/slide-deck.js",

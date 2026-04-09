@@ -92,6 +92,7 @@ export class SDeck extends HTMLElement {
   private toolbar: ShadowRoot | null = null;
   private toolbarHost: HTMLElement | null = null;
   private scrollObserver: IntersectionObserver | null = null;
+  private resizeObserver: ResizeObserver | null = null;
   private initialized = false;
 
   static get observedAttributes() {
@@ -134,6 +135,8 @@ export class SDeck extends HTMLElement {
       this.setupPageNumbers();
       this.setupHeaders();
       this.setupMessages();
+      this.setupSources();
+      this.setupAccentImages();
       this.createToolbar();
       this.setupKeyboard();
       this.setupScrollObserver();
@@ -210,6 +213,36 @@ export class SDeck extends HTMLElement {
     });
   }
 
+  private setupSources() {
+    const hiddenLayouts = ['title', 'section'];
+    this.slides.forEach((slide) => {
+      const source = slide.getAttribute('source');
+      const layout = slide.getAttribute('layout') || '';
+      if (!source || hiddenLayouts.includes(layout)) return;
+      if (slide.querySelector('.sd-source')) return;
+      const el = document.createElement('div');
+      el.className = 'sd-source';
+      el.textContent = source;
+      slide.appendChild(el);
+    });
+  }
+
+  private setupAccentImages() {
+    this.slides.forEach((slide) => {
+      const bgImage = slide.getAttribute('bg-image');
+      const layout = slide.getAttribute('layout') || '';
+      if (!bgImage || layout !== 'accent-image') return;
+      if (slide.querySelector('.sd-accent-image')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'sd-accent-image';
+      const img = document.createElement('img');
+      img.src = bgImage;
+      img.alt = '';
+      wrapper.appendChild(img);
+      slide.prepend(wrapper);
+    });
+  }
+
   private createToolbar() {
     this.toolbarHost = document.createElement('div');
     this.toolbarHost.className = 'sd-toolbar-host';
@@ -253,6 +286,13 @@ export class SDeck extends HTMLElement {
 
     const gridBtn = this.toolbar.querySelector('.btn-grid');
     if (gridBtn) gridBtn.classList.toggle('active', this.isGridView);
+
+    const pdfBtn = this.toolbar.querySelector('.btn-pdf') as HTMLButtonElement | null;
+    if (pdfBtn) {
+      pdfBtn.disabled = this.isGridView;
+      pdfBtn.style.opacity = this.isGridView ? '0.3' : '';
+      pdfBtn.style.pointerEvents = this.isGridView ? 'none' : '';
+    }
   }
 
   private setupKeyboard() {
@@ -329,13 +369,17 @@ export class SDeck extends HTMLElement {
     this.classList.add('sd-grid');
     this.updateToolbar();
 
-    // Calculate scale after layout
+    // Calculate scale after layout, and re-calc on resize
     requestAnimationFrame(() => this.updateGridScale());
+    this.resizeObserver = new ResizeObserver(() => this.updateGridScale());
+    this.resizeObserver.observe(this);
   }
 
   private exitGrid() {
     this.isGridView = false;
     this.classList.remove('sd-grid');
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
 
     // Unwrap slides from grid cells
     const cells = Array.from(this.querySelectorAll('.sd-grid-cell'));

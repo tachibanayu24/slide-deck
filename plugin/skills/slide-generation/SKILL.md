@@ -73,6 +73,8 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 | `bg` | 任意 | 背景。CSSの `background` に渡す値 |
 | `header` | 任意 | スライド上部に太字で表示するタイトル（1.5rem, 700）。`title`/`section` レイアウトでは非表示 |
 | `message` | 任意 | header 下にキーメッセージバーとして表示（青背景+左ボーダー）。スライドの要点を1-2行で。`title`/`section` レイアウトでは非表示 |
+| `source` | 任意 | 右下に小さく表示する出典テキスト。`title`/`section` レイアウトでは非表示 |
+| `bg-image` | 任意 | `layout="accent-image"` 用。右側アクセント帯に表示する画像パス |
 
 フッターの表示ルール：
 - 左フッターに `ページ番号 / 総数`
@@ -86,6 +88,49 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 |---|---|
 | `text` | セマンティックな意味のみ（スタイルなし） |
 | `visual` | `display: flex` + 中央揃え。画像やSVGを自動でセンタリング |
+
+### `<s-flow>`
+
+プロセスフロー（シェブロン矢印）。ステップ数に応じて自動でサイズ調整。
+
+```html
+<s-flow data='[{"label":"分析","sub":"現状把握"},{"label":"設計","sub":"計画策定"},{"label":"実行"},{"label":"評価","sub":"KPI検証"}]'></s-flow>
+```
+
+| 属性 | 必須 | 説明 |
+|---|---|---|
+| `data` | 必須 | JSON配列: `{ label, sub?, color? }` |
+| `colors` | 任意 | カンマ区切りの色コード |
+
+### `<s-kpi>`
+
+KPI指標カード。横並びで均等配置。
+
+```html
+<s-kpi data='[{"label":"ARR","value":"52億円","change":"+42%","trend":"up"},{"label":"チャーン","value":"0.8%","change":"▲0.3pt","trend":"down"}]'></s-kpi>
+```
+
+| 属性 | 必須 | 説明 |
+|---|---|---|
+| `data` | 必須 | JSON配列: `{ label, value, change?, trend?: "up"\|"down"\|"neutral" }` |
+
+### `<s-compare>`
+
+Before/After 比較図。左右2カラム + 中央矢印。
+
+```html
+<s-compare before-label="現状" after-label="目標"
+  before='[{"text":"手動入力","detail":"Excel転記でミス頻発"}]'
+  after='[{"text":"自動連携","detail":"API統合でエラー99%減"}]'>
+</s-compare>
+```
+
+| 属性 | 必須 | 説明 |
+|---|---|---|
+| `before` | 必須 | JSON配列: `{ text, detail? }` |
+| `after` | 必須 | JSON配列: `{ text, detail? }` |
+| `before-label` | 任意 | 左側ヘッダー（デフォルト: "Before"） |
+| `after-label` | 任意 | 右側ヘッダー（デフォルト: "After"） |
 
 ### `<s-chart>`
 
@@ -254,6 +299,27 @@ slide-deck は Web Components (`<s-deck>`, `<s-slide>`) + Tailwind CSS で構成
 </s-slide>
 ```
 
+### `accent-image` — 右側アクセント画像付き
+
+- 用途: Gemini画像を賑やかしとして活用するスライド
+- 構造: 左72%がコンテンツ、右28%にGemini画像を円弧でクリッピング表示
+- `bg-image` 属性で画像パスを指定。画像は `object-fit: cover` で表示
+- 画像は `--scene` フラグで生成した縦長（ポートレート）のシーン画像が最適
+
+```html
+<s-slide layout="accent-image" bg-image=".images/factory.png" header="タイトル" message="要点">
+  <!-- コンテンツ（テーブル、チャート、テキスト等） -->
+</s-slide>
+```
+
+**画像生成のコツ:**
+```bash
+slide-gen-image --scene \
+  --prompt "Vertical composition: [シーンの説明], portrait orientation" \
+  --style "Cinematic vertical photography. Rich colors, dark moody atmosphere." \
+  --width 300 --output .images/[name].png
+```
+
 ## スタイルプリセット
 
 Phase 1 でユーザーが選択したプリセットに従って、配色・背景・装飾を統一する。
@@ -310,6 +376,23 @@ Phase 1 でユーザーが選択したプリセットに従って、配色・背
 | アクセント | amber-600 (`#d97706`) |
 | カード | `bg-emerald-50 rounded-xl p-5` / `bg-amber-50` |
 | 装飾 | ソフトグラデーション。影は `shadow-sm` まで |
+
+## 完成デッキの参照例
+
+**`references/example-deck.html` を必ず読んでから生成してください。** このファイルはコンサル品質のスライドデッキの構造・情報密度・コンポーネント使用法の基準例です。
+
+この例で使用しているパターン:
+- `header` + `message` + `source` 属性の組み合わせ
+- `<s-flow>` でプロセスフロー・優先度表現
+- `<s-kpi>` でKPI指標の可視化
+- `<s-compare>` でBefore/After比較
+- `<s-chart>` で棒グラフ・横棒グラフ
+- `layout="accent-image"` + `bg-image` でGemini画像のアクセント表示
+- テーブル（`<table>`）による構造化データの提示
+- Lucideアイコンのインライン使用
+- テキストによる説明文
+
+**生成するスライドがこの例と同等以上の情報密度を持つようにしてください。**
 
 ## デザイン基本原則
 
