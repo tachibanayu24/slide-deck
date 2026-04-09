@@ -7,7 +7,7 @@
   "exports": {
     ".": "./dist/slide-deck.js"
   },
-  "files": ["dist"],
+  "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=iife --outfile=dist/slide-deck.js --minify",
     "dev": "esbuild src/index.ts --bundle --format=iife --outfile=dist/slide-deck.js --watch",
